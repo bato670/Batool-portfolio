@@ -333,23 +333,29 @@ footer strong{color:rgba(255,255,255,.85)}
 }
 </style>
 
-
-<style id="project-images">
-.proj-image-wrap{
-  width:100%;
-  height:180px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:1rem;
+<style id="project-logo-backgrounds">
+.proj-card.project-logo-bg{
   overflow:hidden;
-  border-radius:12px;
+  isolation:isolate;
 }
-.proj-image{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
+.proj-card.project-logo-bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:var(--project-logo);
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:190px auto;
+  opacity:.13;
+  z-index:-1;
+  pointer-events:none;
+}
+.proj-card.project-logo-bg > *{
+  position:relative;
+  z-index:1;
+}
+@media(max-width:640px){
+  .proj-card.project-logo-bg::before{background-size:155px auto}
 }
 </style>
 
@@ -598,7 +604,6 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
-        <div class="proj-image-wrap"><img class="proj-image" src="assets/draya.jpeg" alt="شعار مبادرة دراية"></div>
         <div class="proj-name">منصة وصل</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -610,7 +615,6 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
-        <div class="proj-image-wrap"><img class="proj-image" src="assets/rubaeyat.jpeg" alt="شعار ربوعيات نظامية"></div>
         <div class="proj-name">منصة مُقارن</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -621,7 +625,6 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
-        <div class="proj-image-wrap"><img class="proj-image" src="assets/istintaq.jpeg" alt="شعار استنطاق"></div>
         <div class="proj-name">منصة نبراس</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -633,7 +636,6 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
-        <div class="proj-image-wrap"><img class="proj-image" src="assets/asas.png" alt="شعار أسس"></div>
         <div class="proj-name">منصة رِفد</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -643,9 +645,8 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card">
+      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/bayyinah.png')">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
-        <div class="proj-image-wrap"><img class="proj-image" src="assets/bayyinah.jpeg" alt="شعار منصة بيّنة"></div>
         <div class="proj-name">منصة بيّنة</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -654,9 +655,8 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card">
+      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/adud.jpeg')">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
-        <div class="proj-image-wrap"><img class="proj-image" src="assets/adud.jpeg" alt="شعار منصة عضد"></div>
         <div class="proj-name">منصة عَضُد</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -665,7 +665,7 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card">
+      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/draya.jpeg')">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipp">🧭</div>
         <div class="proj-name">مبادرة دراية التوعوية</div>
@@ -676,7 +676,7 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card">
+      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/rubaeyat.jpeg')">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipt">📅</div>
         <div class="proj-name">قيادة برنامج ربوعيّات نظامية</div>
@@ -687,7 +687,7 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card">
+      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/istintaq.jpeg')">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipr">🕵️‍♀️</div>
         <div class="proj-name">قيادة برنامج استنطاق</div>
@@ -699,7 +699,7 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card">
+      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/asas.jpeg')">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipg">⚖️</div>
         <div class="proj-name">قيادة برنامج أسُس — المحاماة من التأسيس إلى الميدان</div>
