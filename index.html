@@ -7,6 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 <style>
+
+@font-face{font-family:'Thmanyah';src:url('fonts/._thmanyahsans-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Thmanyah';src:url('fonts/._thmanyahsans-Black.otf') format('opentype');font-weight:700 900;font-style:normal;font-display:swap;}
+
 :root {
   --ink:        #110e1c;
   --ink-soft:   #3d3356;
@@ -247,7 +251,88 @@ footer strong{color:rgba(255,255,255,.85)}
 
 @media(max-width:960px){.proj-grid{grid-template-columns:1fr}.contact-inner{grid-template-columns:1fr;gap:2rem}.hero-inner{grid-template-columns:1fr}.hero-emblem{display:none}}
 @media(max-width:640px){.stats-inner{flex-direction:column}.stat{border:none;border-bottom:1px solid var(--divider)}.stat:last-child{border:none}}
+
+/* خط ثمَنيّة للعناوين الأساسية والتبويبات والعناوين الجانبية */
+.card-h,
+.qn-item,
+.sc-h,
+.hero-name,
+.hero-title,
+.hero-tag,
+.nav-name,
+.ct-text h2,
+.ct-form h3,
+.award-title,
+.proj-name,
+.exp-role,
+.tl-title {
+  font-family:'Thmanyah','IBM Plex Sans Arabic',sans-serif;
+}
+
+.card-h,
+.qn-item,
+.sc-h,
+.hero-name,
+.nav-name,
+.ct-text h2,
+.ct-form h3,
+.award-title,
+.proj-name,
+.exp-role,
+.tl-title {
+  font-weight:700;
+}
+
 </style>
+
+<style id="thmanyah-font">
+@font-face {
+  font-family: "Thmanyah";
+  src: url("./fonts/Thmanyah-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Thmanyah";
+  src: url("./fonts/Thmanyah-Black.otf") format("opentype");
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Thmanyah for main headings, tabs, and side headings */
+.card-h,
+.qn-item,
+.sc-h,
+.hero-name,
+.hero-title,
+.hero-tag,
+.nav-name,
+.ct-text h2,
+.ct-form h3,
+.award-title,
+.proj-name,
+.exp-role,
+.tl-title {
+  font-family: "Thmanyah", "IBM Plex Sans Arabic", sans-serif !important;
+}
+
+.card-h,
+.qn-item,
+.sc-h,
+.hero-name,
+.nav-name,
+.ct-text h2,
+.ct-form h3,
+.award-title,
+.proj-name,
+.exp-role,
+.tl-title {
+  font-weight: 700;
+}
+</style>
+
 </head>
 <body>
 
