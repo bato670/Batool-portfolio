@@ -7,10 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 <style>
-
-@font-face{font-family:'Thmanyah';src:url('fonts/._thmanyahsans-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
-@font-face{font-family:'Thmanyah';src:url('fonts/._thmanyahsans-Black.otf') format('opentype');font-weight:700 900;font-style:normal;font-display:swap;}
-
 :root {
   --ink:        #110e1c;
   --ink-soft:   #3d3356;
@@ -251,111 +247,25 @@ footer strong{color:rgba(255,255,255,.85)}
 
 @media(max-width:960px){.proj-grid{grid-template-columns:1fr}.contact-inner{grid-template-columns:1fr;gap:2rem}.hero-inner{grid-template-columns:1fr}.hero-emblem{display:none}}
 @media(max-width:640px){.stats-inner{flex-direction:column}.stat{border:none;border-bottom:1px solid var(--divider)}.stat:last-child{border:none}}
-
-/* خط ثمَنيّة للعناوين الأساسية والتبويبات والعناوين الجانبية */
-.card-h,
-.qn-item,
-.sc-h,
-.hero-name,
-.hero-title,
-.hero-tag,
-.nav-name,
-.ct-text h2,
-.ct-form h3,
-.award-title,
-.proj-name,
-.exp-role,
-.tl-title {
-  font-family:'Thmanyah','IBM Plex Sans Arabic',sans-serif;
-}
-
-.card-h,
-.qn-item,
-.sc-h,
-.hero-name,
-.nav-name,
-.ct-text h2,
-.ct-form h3,
-.award-title,
-.proj-name,
-.exp-role,
-.tl-title {
-  font-weight:700;
-}
-
 </style>
 
-<style id="thmanyah-font">
-@font-face {
-  font-family: "Thmanyah";
-  src: url("./fonts/Thmanyah-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Thmanyah";
-  src: url("./fonts/Thmanyah-Black.otf") format("opentype");
-  font-weight: 700 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Thmanyah for main headings, tabs, and side headings */
-.card-h,
-.qn-item,
-.sc-h,
-.hero-name,
-.hero-title,
-.hero-tag,
-.nav-name,
-.ct-text h2,
-.ct-form h3,
-.award-title,
-.proj-name,
-.exp-role,
-.tl-title {
-  font-family: "Thmanyah", "IBM Plex Sans Arabic", sans-serif !important;
-}
-
-.card-h,
-.qn-item,
-.sc-h,
-.hero-name,
-.nav-name,
-.ct-text h2,
-.ct-form h3,
-.award-title,
-.proj-name,
-.exp-role,
-.tl-title {
-  font-weight: 700;
-}
-</style>
-
-<style id="project-logo-backgrounds">
-.proj-card.project-logo-bg{
+<style id="project-logo-display">
+.proj-image-wrap{
+  width:100%;
+  height:170px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 1rem;
   overflow:hidden;
-  isolation:isolate;
+  border-radius:12px;
 }
-.proj-card.project-logo-bg::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:var(--project-logo);
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:190px auto;
-  opacity:.13;
-  z-index:-1;
-  pointer-events:none;
-}
-.proj-card.project-logo-bg > *{
-  position:relative;
-  z-index:1;
-}
-@media(max-width:640px){
-  .proj-card.project-logo-bg::before{background-size:155px auto}
+.proj-image{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
 }
 </style>
 
@@ -604,6 +514,7 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
+        <div class="proj-ico ipt">🔗</div>
         <div class="proj-name">منصة وصل</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -615,6 +526,7 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
+        <div class="proj-ico ipg">🔍</div>
         <div class="proj-name">منصة مُقارن</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -625,6 +537,7 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
+        <div class="proj-ico ipt" style="padding:0;overflow:hidden;background:#f4f0e4"><img src="assets/nibras-logo.png" alt="شعار منصة نبراس" style="width:100%;height:100%;object-fit:contain;border-radius:inherit"></div>
         <div class="proj-name">منصة نبراس</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -636,6 +549,7 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
+        <div class="proj-ico ipp" style="padding:0;overflow:hidden"><img src="assets/rifad-logo.jpeg" alt="شعار منصة رِفد" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"></div>
         <div class="proj-name">منصة رِفد</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -645,8 +559,10 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/bayyinah.png')">
+      <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
+        <div class="proj-ico ipr">⚖️</div>
+        <div class="proj-image-wrap"><img class="proj-image" src="assets/bayyinah.png" alt="شعار منصة بيّنة"></div>
         <div class="proj-name">منصة بيّنة</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -655,8 +571,10 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/adud.jpeg')">
+      <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
+        <div class="proj-ico ipg">🤝</div>
+        <div class="proj-image-wrap"><img class="proj-image" src="assets/adud.jpeg" alt="شعار منصة عضد"></div>
         <div class="proj-name">منصة عَضُد</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -665,9 +583,10 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/draya.jpeg')">
+      <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipp">🧭</div>
+        <div class="proj-image-wrap"><img class="proj-image" src="assets/draya.jpeg" alt="شعار مبادرة دراية"></div>
         <div class="proj-name">مبادرة دراية التوعوية</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -676,9 +595,10 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/rubaeyat.jpeg')">
+      <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipt">📅</div>
+        <div class="proj-image-wrap"><img class="proj-image" src="assets/rubaeyat.jpeg" alt="شعار ربيعيات نظامية"></div>
         <div class="proj-name">قيادة برنامج ربوعيّات نظامية</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -687,9 +607,10 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/istintaq.jpeg')">
+      <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipr">🕵️‍♀️</div>
+        <div class="proj-image-wrap"><img class="proj-image" src="assets/istintaq.jpeg" alt="شعار استنطاق"></div>
         <div class="proj-name">قيادة برنامج استنطاق</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
@@ -699,9 +620,10 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
       </div>
 
-      <div class="proj-card project-logo-bg" style="--project-logo:url('assets/asas.jpeg')">
+      <div class="proj-card">
         <div class="ceb"><button class="cebtn" onclick="openEP(this)">تعديل</button><button class="cebtn del" onclick="delCard(this)">حذف</button></div>
         <div class="proj-ico ipg">⚖️</div>
+        <div class="proj-image-wrap"><img class="proj-image" src="assets/asas.jpeg" alt="شعار أسس"></div>
         <div class="proj-name">قيادة برنامج أسُس — المحاماة من التأسيس إلى الميدان</div>
         <button class="more-btn" onclick="toggleMore(this)">عرض التفاصيل ▾</button>
         <div class="more-content">
