@@ -306,6 +306,34 @@ footer strong{color:rgba(255,255,255,.85)}
 .mf-dot{width:8px;height:8px;border-radius:100px;border:none;background:var(--divider);padding:0;cursor:pointer;transition:width .3s,background .3s}
 .mf-dot.on{width:22px;background:var(--purple-mid)}
 @media(prefers-reduced-motion:reduce){.mf-card{transition:none}}
+
+/* RECOMMENDATION ENVELOPES */
+.env{--d:#9C826D;--m:#B69C87;--l:#C9B5A3;--ink:#4a3a2c;cursor:pointer;padding-top:140px;flex:0 1 265px;width:100%;max-width:300px;outline:none;-webkit-tap-highlight-color:transparent}
+.env.f{--d:#9C8CA9;--m:#B4A5BF;--l:#C8BDD1;--ink:#4a3d5c}
+.env-box{position:relative;height:135px;perspective:900px;filter:drop-shadow(0 10px 16px rgba(58,39,104,.22));transition:transform .25s}
+.env:not(.open):hover .env-box{transform:translateY(-4px)}
+.env:focus-visible .env-box{outline:2px solid var(--gold);outline-offset:4px;border-radius:10px}
+.env-back{position:absolute;inset:0;background:var(--d);border-radius:10px}
+.env-flap{position:absolute;left:0;right:0;top:0;height:58%;background:linear-gradient(180deg,var(--m),var(--l));clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .5s ease .1s,z-index 0s .3s;z-index:5;border-radius:10px 10px 0 0}
+.env.open .env-flap{transform:rotateX(180deg);z-index:1;filter:brightness(.85)}
+.env-letter{position:absolute;left:9px;right:9px;bottom:8px;height:142px;background:#fff;border-radius:8px;z-index:2;padding:.7rem .8rem;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.1rem;transition:transform .65s cubic-bezier(.22,.8,.26,1) .28s;box-shadow:0 -2px 10px rgba(0,0,0,.08);pointer-events:none;overflow:hidden}
+.env.open .env-letter{transform:translateY(-124px);pointer-events:auto}
+.env-letter::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--m),var(--gold))}
+.env-q{font-family:Georgia,serif;font-size:1.6rem;line-height:.9;color:var(--divider);margin-top:.15rem}
+.env-name{font-weight:700;font-size:.84rem;line-height:1.5;color:var(--ink)}
+.env-role{font-size:.7rem;line-height:1.5;color:var(--ink-soft);margin-top:.1rem}
+.env-open{margin-top:.35rem;display:inline-flex;align-items:center;gap:.35rem;background:linear-gradient(135deg,var(--purple),var(--purple-mid));color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;padding:.32rem .9rem;border-radius:100px}
+.env-front{position:absolute;inset:0;z-index:3;border-radius:10px;background:linear-gradient(160deg,var(--l),var(--m));clip-path:polygon(0 0,50% 56%,100% 0,100% 100%,0 100%)}
+.env-from{position:absolute;left:12px;right:12px;bottom:10px;z-index:4;text-align:center;color:var(--ink);font-size:.72rem;font-weight:700;line-height:1.4;transition:opacity .3s;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.env-seal{position:absolute;left:50%;top:50%;width:42px;height:40px;margin:-24px 0 0 -21px;z-index:6;border-radius:52% 48% 55% 45%/48% 55% 45% 52%;background:radial-gradient(circle at 34% 28%,#fff,#f6f3f1 55%,#dcd6d2);box-shadow:0 3px 7px rgba(60,40,30,.35),inset 0 -2px 4px rgba(120,100,90,.25);transition:transform .4s,opacity .35s}
+.env-seal::after{content:"";position:absolute;inset:8px;border-radius:50%;border:1.5px solid rgba(150,130,120,.35);box-shadow:inset 0 1px 2px rgba(120,100,90,.25)}
+.env.open .env-seal{transform:scale(.3) rotate(90deg);opacity:0}
+.env.open .env-from{opacity:0}
+.env-row{display:flex;flex-wrap:wrap;justify-content:center;gap:.2rem 1.2rem;margin-bottom:.4rem}
+.env-group-h{display:flex;align-items:center;gap:.8rem;margin:.6rem 0 .3rem;font-size:.82rem;font-weight:700;color:var(--purple-mid)}
+.env-group-h::before,.env-group-h::after{content:'';flex:1;height:1px;background:var(--divider)}
+.env-hint{text-align:center;font-size:.74rem;color:var(--ink-faint);margin-top:.8rem}
+@media(prefers-reduced-motion:reduce){.env,.env-flap,.env-letter,.env-seal{transition:none}}
 </style>
 </head>
 <body>
@@ -842,43 +870,83 @@ footer strong{color:rgba(255,255,255,.85)}
   <!-- RECOMMENDATIONS -->
   <div class="card" data-page="contact">
     <div class="card-h">التوصيات</div>
-    <div class="rec-grid">
-      <div class="rec-card"><span class="rec-quote">”</span>
-        <div class="rec-name">المحامية سهام عبدالعزيز الياسي</div>
-        <div class="rec-role">محامية — مكة المكرمة</div>
-        <a class="rec-open" href="https://drive.google.com/file/d/1dVFM0lLQYjXLMEHzXKoUFhvoqNaQaPwd/view?usp=drivesdk" target="_blank">فتح خطاب التوصية <span>←</span></a>
+    <div id="envGrid">
+    <div class="env-group-h"><span>من الهيئة الأكاديمية</span></div>
+    <div class="env-row"><div class="env f" role="button" tabindex="0" aria-expanded="false" aria-label="فتح توصية د. دلال كويران السلمي">
+        <div class="env-box">
+          <div class="env-back"></div>
+          <div class="env-flap"></div>
+          <div class="env-letter"><span class="env-q">”</span><div class="env-name">د. دلال كويران السلمي</div><div class="env-role">وكيلة كلية الدراسات القضائية والأنظمة</div><a class="env-open" href="https://drive.google.com/file/d/10ZIoQnM3ts09vab0iSqqCTaa_Wbvs8NL/view?usp=drivesdk" target="_blank" rel="noopener">فتح خطاب التوصية <span>←</span></a></div>
+          <div class="env-front"></div>
+          <div class="env-from">د. دلال كويران السلمي</div>
+          <div class="env-seal"></div>
+        </div>
       </div>
-      <div class="rec-card"><span class="rec-quote">”</span>
-        <div class="rec-name">المحامية أسماء سالم الزهراني</div>
-        <div class="rec-role">محامية — مكة المكرمة</div>
-        <a class="rec-open" href="https://drive.google.com/file/d/1zHTgpb_YywfXZnWLwDd4ovow9Rv0lKJr/view?usp=drivesdk" target="_blank">فتح خطاب التوصية <span>←</span></a>
+<div class="env m" role="button" tabindex="0" aria-expanded="false" aria-label="فتح توصية د. عبدالله بن جمعان الغامدي">
+        <div class="env-box">
+          <div class="env-back"></div>
+          <div class="env-flap"></div>
+          <div class="env-letter"><span class="env-q">”</span><div class="env-name">د. عبدالله بن جمعان الغامدي</div><div class="env-role">رئيس اللجنة الإعلامية بالكلية · وكيل الكلية للشؤون الأكاديمية</div><a class="env-open" href="https://drive.google.com/file/d/1x17VfWHOAvVxZgv3XjugLLKBHaKy9XrP/view?usp=drivesdk" target="_blank" rel="noopener">فتح خطاب التوصية <span>←</span></a></div>
+          <div class="env-front"></div>
+          <div class="env-from">د. عبدالله بن جمعان الغامدي</div>
+          <div class="env-seal"></div>
+        </div>
       </div>
-      <div class="rec-card"><span class="rec-quote">”</span>
-        <div class="rec-name">د. نورة سعود الشريم</div>
-        <div class="rec-role">عضو هيئة تدريس — جامعة أم القرى</div>
-        <a class="rec-open" href="https://drive.google.com/file/d/1wLJmdXbhM_CAcpAgdtiallTHa1h6Bx84/view?usp=drivesdk" target="_blank">فتح خطاب التوصية <span>←</span></a>
-      </div>
-      <div class="rec-card"><span class="rec-quote">”</span>
-        <div class="rec-name">المحامي يوسف حسن مشنوي</div>
-        <div class="rec-role">محامٍ — الرياض</div>
-        <a class="rec-open" href="https://drive.google.com/file/d/1u8v88mz7TGTCC0ZlUCMLLzqq9vtN4zW4/view?usp=drivesdk" target="_blank">فتح خطاب التوصية <span>←</span></a>
-      </div>
-      <div class="rec-card"><span class="rec-quote">”</span>
-        <div class="rec-name">د. دلال كويران السلمي</div>
-        <div class="rec-role">وكيلة كلية الدراسات القضائية والأنظمة</div>
-        <a class="rec-open" href="https://drive.google.com/file/d/10ZIoQnM3ts09vab0iSqqCTaa_Wbvs8NL/view?usp=drivesdk" target="_blank">فتح خطاب التوصية <span>←</span></a>
-      </div>
-      <div class="rec-card"><span class="rec-quote">”</span>
-        <div class="rec-name">د. عبدالله بن جمعان الغامدي</div>
-        <div class="rec-role">رئيس اللجنة الإعلامية بالكلية · وكيل الكلية للشؤون الأكاديمية</div>
-        <a class="rec-open" href="https://drive.google.com/file/d/1x17VfWHOAvVxZgv3XjugLLKBHaKy9XrP/view?usp=drivesdk" target="_blank">فتح خطاب التوصية <span>←</span></a>
-      </div>
-      <div class="rec-card"><span class="rec-quote">”</span>
-        <div class="rec-name">المحامي جاسر بن ناصر الجاسر</div>
-        <div class="rec-role">محامٍ ومستشار قانوني — جدة</div>
-        <a class="rec-open" href="https://drive.google.com/file/d/1QlXpC-zGkJBOJswJu_99IvqBCrFGjD6Z/view?usp=drivesdk" target="_blank">فتح خطاب التوصية <span>←</span></a>
+<div class="env f" role="button" tabindex="0" aria-expanded="false" aria-label="فتح توصية د. نورة سعود الشريم">
+        <div class="env-box">
+          <div class="env-back"></div>
+          <div class="env-flap"></div>
+          <div class="env-letter"><span class="env-q">”</span><div class="env-name">د. نورة سعود الشريم</div><div class="env-role">عضو هيئة تدريس — جامعة أم القرى</div><a class="env-open" href="https://drive.google.com/file/d/1wLJmdXbhM_CAcpAgdtiallTHa1h6Bx84/view?usp=drivesdk" target="_blank" rel="noopener">فتح خطاب التوصية <span>←</span></a></div>
+          <div class="env-front"></div>
+          <div class="env-from">د. نورة سعود الشريم</div>
+          <div class="env-seal"></div>
+        </div>
       </div>
     </div>
+    <div class="env-group-h"><span>من المحامين والمحاميات</span></div>
+    <div class="env-row"><div class="env f" role="button" tabindex="0" aria-expanded="false" aria-label="فتح توصية المحامية سهام عبدالعزيز الياسي">
+        <div class="env-box">
+          <div class="env-back"></div>
+          <div class="env-flap"></div>
+          <div class="env-letter"><span class="env-q">”</span><div class="env-name">المحامية سهام عبدالعزيز الياسي</div><div class="env-role">محامية — مكة المكرمة</div><a class="env-open" href="https://drive.google.com/file/d/1dVFM0lLQYjXLMEHzXKoUFhvoqNaQaPwd/view?usp=drivesdk" target="_blank" rel="noopener">فتح خطاب التوصية <span>←</span></a></div>
+          <div class="env-front"></div>
+          <div class="env-from">المحامية سهام عبدالعزيز الياسي</div>
+          <div class="env-seal"></div>
+        </div>
+      </div>
+<div class="env f" role="button" tabindex="0" aria-expanded="false" aria-label="فتح توصية المحامية أسماء سالم الزهراني">
+        <div class="env-box">
+          <div class="env-back"></div>
+          <div class="env-flap"></div>
+          <div class="env-letter"><span class="env-q">”</span><div class="env-name">المحامية أسماء سالم الزهراني</div><div class="env-role">محامية — مكة المكرمة</div><a class="env-open" href="https://drive.google.com/file/d/1zHTgpb_YywfXZnWLwDd4ovow9Rv0lKJr/view?usp=drivesdk" target="_blank" rel="noopener">فتح خطاب التوصية <span>←</span></a></div>
+          <div class="env-front"></div>
+          <div class="env-from">المحامية أسماء سالم الزهراني</div>
+          <div class="env-seal"></div>
+        </div>
+      </div>
+<div class="env m" role="button" tabindex="0" aria-expanded="false" aria-label="فتح توصية المحامي يوسف حسن مشنوي">
+        <div class="env-box">
+          <div class="env-back"></div>
+          <div class="env-flap"></div>
+          <div class="env-letter"><span class="env-q">”</span><div class="env-name">المحامي يوسف حسن مشنوي</div><div class="env-role">محامٍ — الرياض</div><a class="env-open" href="https://drive.google.com/file/d/1u8v88mz7TGTCC0ZlUCMLLzqq9vtN4zW4/view?usp=drivesdk" target="_blank" rel="noopener">فتح خطاب التوصية <span>←</span></a></div>
+          <div class="env-front"></div>
+          <div class="env-from">المحامي يوسف حسن مشنوي</div>
+          <div class="env-seal"></div>
+        </div>
+      </div>
+<div class="env m" role="button" tabindex="0" aria-expanded="false" aria-label="فتح توصية المحامي جاسر بن ناصر الجاسر">
+        <div class="env-box">
+          <div class="env-back"></div>
+          <div class="env-flap"></div>
+          <div class="env-letter"><span class="env-q">”</span><div class="env-name">المحامي جاسر بن ناصر الجاسر</div><div class="env-role">محامٍ ومستشار قانوني — جدة</div><a class="env-open" href="https://drive.google.com/file/d/1QlXpC-zGkJBOJswJu_99IvqBCrFGjD6Z/view?usp=drivesdk" target="_blank" rel="noopener">فتح خطاب التوصية <span>←</span></a></div>
+          <div class="env-front"></div>
+          <div class="env-from">المحامي جاسر بن ناصر الجاسر</div>
+          <div class="env-seal"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <p class="env-hint">تنفتح الخطابات تلقائيًا أثناء التمرير، ويمكنك الضغط على أي مظروف لفتحه أو إغلاقه</p>
   </div>
 
   <div class="card" data-page="contact">
@@ -1043,6 +1111,28 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
   window.addEventListener('resize',function(){layout()});
   new MutationObserver(function(){layout()}).observe(stage.closest('.card'),{attributes:true,attributeFilter:['class']});
   go(0);
+})();
+</script>
+
+<!-- RECOMMENDATION ENVELOPES -->
+<script>
+(function(){
+  var g=document.getElementById('envGrid'); if(!g) return;
+  var envs=[].slice.call(g.querySelectorAll('.env'));
+  function set(e,on){e.classList.toggle('open',on);e.setAttribute('aria-expanded',on?'true':'false')}
+  envs.forEach(function(e,i){
+    e.addEventListener('click',function(ev){ if(ev.target.closest('.env-open')) return; set(e,!e.classList.contains('open')); });
+    e.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();set(e,!e.classList.contains('open'))} });
+  });
+  if(!('IntersectionObserver' in window)){envs.forEach(function(e){set(e,true)});return}
+  var io=new IntersectionObserver(function(list){
+    list.forEach(function(en){
+      var e=en.target, i=envs.indexOf(e);
+      if(en.intersectionRatio>=.55){ if(!e._t&&!e.classList.contains('open')) e._t=setTimeout(function(){set(e,true);e._t=0},(i%3)*150); }
+      else if(en.intersectionRatio<.05){ clearTimeout(e._t); e._t=0; set(e,false); }
+    });
+  },{threshold:[0,.05,.55]});
+  envs.forEach(function(e){io.observe(e)});
 })();
 </script>
 
