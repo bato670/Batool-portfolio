@@ -239,9 +239,14 @@ function gate(){
     showErr('رابط Supabase في site-config.js يجب أن يبدأ بـ https://');
     return;
   }
-  C.key=String(C.key).trim();
-  if(/[^\x21-\x7E]/.test(C.key)||/[^\x21-\x7E]/.test(C.url)){
-    showErr('الرابط أو المفتاح في site-config.js يحتوي حروفًا غير إنجليزية أو مسافات. انسخيهما من Supabase بزر النسخ.');
+  /* تنظيف الرموز الخفية التي تدخل عند النسخ (مسافات، علامات اتجاه الكتابة) */
+  var HID=/[\s\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g;
+  C.url=String(C.url).replace(HID,'').replace(/\/+$/,'');
+  C.key=String(C.key).replace(HID,'');
+  var bad=(C.url+C.key).match(/[^\x21-\x7E]/);
+  if(bad){
+    var inKey=C.key.indexOf(bad[0])>-1;
+    showErr('في '+(inKey?'المفتاح':'الرابط')+' داخل site-config.js حرف غير إنجليزي ("'+bad[0]+'"). احذفيه وانسخي القيمة من Supabase بزر النسخ.');
     return;
   }
 
