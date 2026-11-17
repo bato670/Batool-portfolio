@@ -472,6 +472,50 @@ footer strong{color:rgba(255,255,255,.85)}
 .adm-link{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--divider);color:var(--purple-mid);opacity:.5;transition:opacity .2s,background .2s}
 .adm-link:hover,.adm-link:focus-visible{opacity:1;background:var(--purple-lt)}
 .adm-link svg{width:16px;height:16px}
+
+/* ================= FIX v2: الإحصاءات ================= */
+.stats-row{margin-top:-2.6rem;padding:0 1rem 1.7rem}
+.stats-inner{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;padding:.35rem 0;border-radius:20px;border:1px solid var(--divider);background:#fff;box-shadow:0 14px 44px rgba(58,39,104,.14)}
+.stat{flex:none;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.4rem;padding:1.2rem .9rem 1.1rem;text-align:center;border:none;border-inline-start:1px solid var(--divider);position:relative}
+.stat:first-child{border-inline-start:none}
+.stat::before{content:'';position:absolute;top:0;left:50%;width:26px;height:3px;margin-left:-13px;border-radius:0 0 4px 4px;background:var(--gold);opacity:.75}
+.stat-num{display:block;font-size:1.8rem;line-height:1.1;font-weight:700;color:var(--purple);direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;letter-spacing:.2px}
+.stat-lbl{display:block;font-size:.76rem;line-height:1.65;color:var(--ink-faint);text-wrap:balance;max-width:17ch}
+@media(max-width:1024px){
+  .stats-inner{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stat{border-inline-start:1px solid var(--divider);border-top:none}
+  .stat:nth-child(3n+1){border-inline-start:none}
+  .stat:nth-child(n+4){border-top:1px solid var(--divider)}
+}
+@media(max-width:640px){
+  .stats-row{margin-top:-2.2rem;padding:0 .8rem 1.4rem}
+  .stats-inner{grid-template-columns:repeat(2,minmax(0,1fr));padding:0;border-radius:18px}
+  .stat{padding:1rem .6rem .9rem;gap:.3rem}
+  .stat:nth-child(3n+1){border-inline-start:1px solid var(--divider)}
+  .stat:nth-child(odd){border-inline-start:none}
+  .stat:nth-child(n+3){border-top:1px solid var(--divider)}
+  .stat::before{display:none}
+  .stat-num{font-size:1.55rem}
+  .stat-lbl{font-size:.72rem;max-width:15ch}
+}
+.ticker-wrap{margin-top:.2rem}
+.wm-row{padding:1.1rem 1rem .4rem}
+
+/* ================= FIX v2: المجلات ================= */
+.mf{padding:.2rem 0 0}
+.mf-stage{height:auto;min-height:360px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);margin-inline:-1.4rem}
+.mf-card{top:10px;display:flex;flex-direction:column;box-shadow:0 12px 26px rgba(58,39,104,.2)}
+.mf-img{aspect-ratio:640/595;flex:none}
+.mf-body{flex:1;justify-content:space-between}
+.mf-name{min-height:0;flex:1;font-size:.88rem}
+.mf-dl{margin-top:.2rem}
+.mf-ctrl{direction:ltr!important;gap:1.1rem;margin-top:.6rem}
+.mf-dots{direction:ltr;flex-direction:row-reverse;gap:.4rem}
+.mf-arrow{display:grid;place-items:center;padding:0;width:40px;height:40px}
+.mf-arrow svg{width:18px;height:18px;display:block}
+.mf-arrow:disabled{opacity:.35;cursor:default;background:#fff;color:var(--purple)}
+.mf-stage:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;border-radius:12px}
+@media(max-width:640px){.mf-card{width:min(270px,72%);margin-left:calc(min(270px,72%) / -2)}}
 </style>
 </head>
 <body>
@@ -530,7 +574,7 @@ footer strong{color:rgba(255,255,255,.85)}
   <div class="stats-inner">
     <div class="stat"><span class="stat-num" id="sGpa">4.00</span><span class="stat-lbl">المعدل التراكمي من أصل 4.00</span></div>
     <div class="stat"><span class="stat-num" id="s2">950+</span><span class="stat-lbl">ساعة تطوعية موثقة</span></div>
-    <div class="stat"><span class="stat-num" id="s3">+40</span><span class="stat-lbl">دورة تدريبية ساهمت في تفعيلها</span></div>
+    <div class="stat"><span class="stat-num" id="s3">40+</span><span class="stat-lbl">دورة تدريبية ساهمت في تفعيلها</span></div>
     <div class="stat"><span class="stat-num" id="s4">12</span><span class="stat-lbl">دراسة قانونيّة</span></div>
     <div class="stat"><span class="stat-num" id="s5">5+</span><span class="stat-lbl">تكريمات محليَّة ودولية</span></div>
     <div class="stat"><span class="stat-num" id="sInt">5</span><span class="stat-lbl">جهات تدريب قانونيَّة</span></div>
@@ -1431,43 +1475,117 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
 });
 </script>
 
-<!-- MAGAZINES COVERFLOW -->
+<!-- MAGAZINES COVERFLOW v2: يعيد تهيئة نفسه إذا تغيّر المحتوى بعد تحميله من Supabase -->
 <script>
 (function(){
-  var stage=document.getElementById('mfStage'); if(!stage) return;
-  var cards=[].slice.call(stage.querySelectorAll('.mf-card')), n=cards.length, cur=0;
-  var dotsEl=document.getElementById('mfDots'), dots=[];
-  cards.forEach(function(_,i){var d=document.createElement('button');d.type='button';d.className='mf-dot';d.setAttribute('aria-label','المجلة '+(i+1));d.onclick=function(){go(i)};dotsEl.appendChild(d);dots.push(d)});
-  function layout(f){
-    f=(f==null)?cur:f;
-    var sp=Math.min(stage.clientWidth*.36,170);
-    cards.forEach(function(c,i){
-      var o=i-f, a=Math.abs(o), s=o<0?-1:1;
-      var x=o*sp*-1*-1, z=-Math.min(a,2)*140, ry=-Math.max(-1.2,Math.min(1.2,o))*38, sc=1-Math.min(a,2)*.1;
-      // RTL reading order: next card sits to the left
-      x=-o*sp;
-      c.style.transform='translateX('+x+'px) translateZ('+z+'px) rotateY('+(-ry)+'deg) scale('+sc+')';
-      c.style.zIndex=100-Math.round(a*10);
-      c.classList.toggle('side',Math.round(a)>=1);
-      c.classList.toggle('hide',a>1.6);
+  var SVG_L='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+  var SVG_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+
+  function init(){
+    var stage=document.getElementById('mfStage');
+    if(!stage||stage._mf) return;
+    var cards=[].slice.call(stage.querySelectorAll('.mf-card'));
+    var n=cards.length; if(!n) return;
+    stage._mf=true;
+
+    var root=stage.closest('.mf')||stage.parentNode, cur=0;
+    cards.forEach(function(c){c.removeAttribute('style');c.classList.remove('side','hide')});
+    stage.setAttribute('tabindex','0');
+    stage.setAttribute('aria-label','معرض المجلات');
+
+    /* الأزرار تُبنى من جديد: ‹ = التالي (يسار) · › = السابق (يمين) */
+    var ctrl=root.querySelector('.mf-ctrl');
+    if(!ctrl){ctrl=document.createElement('div');ctrl.className='mf-ctrl';root.appendChild(ctrl)}
+    ctrl.innerHTML='';
+    function mkBtn(svg,label,fn){var b=document.createElement('button');b.type='button';b.className='mf-arrow';b.setAttribute('aria-label',label);b.innerHTML=svg;b.onclick=fn;return b}
+    var nextB=mkBtn(SVG_L,'التالي',function(){go(cur+1)});
+    var prevB=mkBtn(SVG_R,'السابق',function(){go(cur-1)});
+    var dotsEl=document.createElement('div');dotsEl.className='mf-dots';
+    var dots=cards.map(function(_,i){var d=document.createElement('button');d.type='button';d.className='mf-dot';d.setAttribute('aria-label','المجلة '+(i+1));d.onclick=function(){go(i)};dotsEl.appendChild(d);return d});
+    ctrl.appendChild(nextB);ctrl.appendChild(dotsEl);ctrl.appendChild(prevB);
+
+    function sp(){return Math.min(stage.clientWidth*.36,170)}
+
+    function layout(f){
+      f=(f==null)?cur:f;
+      var s=sp();
+      cards.forEach(function(c,i){
+        var o=i-f,a=Math.abs(o);
+        var ry=Math.max(-1.2,Math.min(1.2,o))*38;
+        var z=-Math.min(a,2)*140, sc=1-Math.min(a,2)*.1;
+        c.style.transform='translateX('+(-o*s)+'px) translateZ('+z+'px) rotateY('+ry+'deg) scale('+sc+')';
+        c.style.zIndex=100-Math.round(a*10);
+        c.classList.toggle('side',Math.round(a)>=1);
+        c.classList.toggle('hide',a>1.6);
+      });
+    }
+    /* كل البطاقات بنفس الارتفاع، والمنصّة بقدرها (لا قصّ ولا فراغ) */
+    function size(){
+      if(!stage.clientWidth) return;
+      cards.forEach(function(c){c.style.height=''});
+      var h=0;cards.forEach(function(c){h=Math.max(h,c.offsetHeight)});
+      if(h){cards.forEach(function(c){c.style.height=h+'px'});stage.style.height=(h+46)+'px'}
+    }
+    function go(i){
+      cur=Math.max(0,Math.min(n-1,i));
+      layout();
+      dots.forEach(function(d,k){d.classList.toggle('on',k===cur)});
+      prevB.disabled=cur===0; nextB.disabled=cur===n-1;
+    }
+
+    /* السحب: يتحرك الغلاف مع الإصبع */
+    var sx=0,down=false,moved=false,base=0;
+    stage.addEventListener('pointerdown',function(e){
+      if(e.pointerType==='mouse'&&e.button!==0) return;
+      down=true;moved=false;sx=e.clientX;base=cur;
+      stage.classList.add('drag');cards.forEach(function(c){c.style.transition='none'});
+    });
+    window.addEventListener('pointermove',function(e){
+      if(!down) return;
+      var dx=e.clientX-sx; if(Math.abs(dx)>6) moved=true;
+      if(moved) layout(Math.max(-.3,Math.min(n-.7,base+dx/sp())));
+    });
+    function end(e){
+      if(!down) return; down=false;
+      stage.classList.remove('drag');cards.forEach(function(c){c.style.transition=''});
+      var dx=e.clientX-sx;
+      go(moved?Math.round(base+dx/sp()*1.3):cur);
+    }
+    window.addEventListener('pointerup',end);
+    window.addEventListener('pointercancel',end);
+    stage.addEventListener('click',function(e){
+      if(moved){e.preventDefault();e.stopPropagation();moved=false;return}
+      var c=e.target.closest('.mf-card'); if(!c) return;
+      var i=cards.indexOf(c);
+      if(i>-1&&i!==cur){e.preventDefault();go(i)}
+    },true);
+    stage.addEventListener('keydown',function(e){
+      if(e.key==='ArrowLeft'){e.preventDefault();go(cur+1)}
+      if(e.key==='ArrowRight'){e.preventDefault();go(cur-1)}
+    });
+
+    function refresh(){size();layout()}
+    window.addEventListener('resize',refresh);
+    window.addEventListener('load',refresh);
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refresh);
+    if(window.ResizeObserver) new ResizeObserver(refresh).observe(stage);
+    var host=stage.closest('.card');
+    if(host) new MutationObserver(refresh).observe(host,{attributes:true,attributeFilter:['class']});
+    go(0);refresh();
+  }
+
+  /* توحيد شكل الإشارة + في أرقام الإحصاءات (40+ بدل +40) */
+  function fixStats(){
+    [].forEach.call(document.querySelectorAll('.stat-num'),function(e){
+      var m=e.textContent.trim().match(/^\+\s*([\d.,٠-٩]+)$/);
+      if(m) e.textContent=m[1]+'+';
     });
   }
-  function go(i){cur=Math.max(0,Math.min(n-1,i));layout();dots.forEach(function(d,k){d.classList.toggle('on',k===cur)})}
-  document.getElementById('mfR').onclick=function(){go(cur-1)};
-  document.getElementById('mfL').onclick=function(){go(cur+1)};
-  cards.forEach(function(c,i){c.addEventListener('click',function(e){if(moved)return;if(i!==cur){e.preventDefault();go(i)}})});
-  var sx=0,down=false,moved=false,base=0;
-  stage.addEventListener('pointerdown',function(e){down=true;moved=false;sx=e.clientX;base=cur;stage.classList.add('drag');cards.forEach(function(c){c.style.transition='none'})});
-  window.addEventListener('pointermove',function(e){if(!down)return;var dx=e.clientX-sx;if(Math.abs(dx)>6)moved=true;
-    var sp=Math.min(stage.clientWidth*.36,170);var f=base-dx/sp; layout(Math.max(-.3,Math.min(n-.7,f)));});
-  function end(e){if(!down)return;down=false;stage.classList.remove('drag');cards.forEach(function(c){c.style.transition=''});
-    var dx=e.clientX-sx;var sp=Math.min(stage.clientWidth*.36,170);
-    go(Math.round(base-dx/sp*1.3));setTimeout(function(){moved=false},50)}
-  window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);
-  stage.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')go(cur+1);if(e.key==='ArrowRight')go(cur-1)});
-  window.addEventListener('resize',function(){layout()});
-  new MutationObserver(function(){layout()}).observe(stage.closest('.card'),{attributes:true,attributeFilter:['class']});
-  go(0);
+
+  var t=null;
+  function check(){clearTimeout(t);t=setTimeout(function(){init();fixStats()},60)}
+  new MutationObserver(check).observe(document.body,{childList:true,subtree:true});
+  init();fixStats();
 })();
 </script>
 
