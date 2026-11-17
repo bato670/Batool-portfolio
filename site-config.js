@@ -1,4 +1,4 @@
-window.SB = Object.freeze({
+window.SB = {
   url: 'https://zidxzyzpwkjerndqggzm.supabase.co',
-  key: '‏sb_publishable_JIS9YRZcU-JmsAPeb3vBg_rmSiknol'
-});
+  key: 'sb_publishable_JlS9YRZcU-J-msAPeb3vBg_rmSiknol'
+};
