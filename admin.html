@@ -234,6 +234,16 @@ function gate(){
     showErr('لم يتم ضبط site-config.js بعد');
     return;
   }
+  C.url=String(C.url).trim().replace(/\/+$/,'');
+  if(!/^https:\/\//.test(C.url)){
+    showErr('رابط Supabase في site-config.js يجب أن يبدأ بـ https://');
+    return;
+  }
+  C.key=String(C.key).trim();
+  if(/[^\x21-\x7E]/.test(C.key)||/[^\x21-\x7E]/.test(C.url)){
+    showErr('الرابط أو المفتاح في site-config.js يحتوي حروفًا غير إنجليزية أو مسافات. انسخيهما من Supabase بزر النسخ.');
+    return;
+  }
 
   function go(){
     if(busy)return;
@@ -306,7 +316,12 @@ function gate(){
     })
     .catch(function(error){
       console.error('Supabase Login Error:', error);
-      showErr('تعذّر الاتصال بالخادم، تحقّقي من الإنترنت وحاولي مجددًا');
+      var host=''; try{host=new URL(C.url).host}catch(e){}
+      showErr(
+        error instanceof TypeError
+          ? 'تعذّر الاتصال بالخادم'+(host?' ('+host+')':'')+' — تأكدي أن مشروع Supabase يعمل (غير موقوف) وأن الرابط في site-config.js صحيح'
+          : 'خطأ غير متوقع: '+(error&&error.message?error.message:error)
+      );
       setBusy(false);
     });
   }
