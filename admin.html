@@ -172,9 +172,10 @@ function gate(){
       start();
 
     })
-    .catch(function(){
-      $('err').textContent='تعذّر الاتصال';
-    });
+.catch(function(error){
+  console.error('Supabase Login Error:', error);
+  $('err').textContent='خطأ: '+error.message;
+});
   }
 
   $('gBtn').onclick=go;
