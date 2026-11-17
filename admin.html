@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>لوحة التحكم</title>
+<style>
+:root{--p:#3a2768;--pm:#5a3f96;--bg:#f8f6fd;--ok:#1f9e6e;--bad:#d94f4f;--line:#e2dbf2}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'IBM Plex Sans Arabic',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:#110e1c;display:flex;flex-direction:column}
+.hide{display:none!important}
+button{font-family:inherit;cursor:pointer}
+/* gate */
+#gate,#picker{margin:auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.6rem;width:min(92vw,360px);box-shadow:0 10px 40px rgba(58,39,104,.15);text-align:center}
+#gate h1,#picker h1{font-size:1.1rem;color:var(--p);margin-bottom:.4rem}
+#gate p,#picker p{font-size:.82rem;color:#3d3356;margin-bottom:1rem;line-height:1.7}
+input[type=password],input[type=email]{width:100%;padding:.65rem .8rem;border:1px solid var(--line);border-radius:8px;font:inherit;margin-bottom:.7rem;text-align:center}
+.btn{background:var(--p);color:#fff;border:0;border-radius:8px;padding:.55rem 1.1rem;font-size:.85rem;font-weight:600}
+.btn.ok{background:var(--ok)}
+.btn.ghost{background:#fff;color:var(--p);border:1px solid var(--line)}
+#err{color:var(--bad);font-size:.78rem;min-height:1.1rem;margin-top:.5rem}
+/* app */
+#app{flex:1;display:flex;flex-direction:column;min-height:0}
+#bar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.55rem .8rem;background:var(--p);color:#fff}
+#bar b{font-size:.9rem;margin-inline-end:auto}
+#st{font-size:.74rem;opacity:.85}
+#bar .btn{padding:.4rem .8rem;font-size:.78rem}
+#bar .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+#tip{background:#fffbe8;border-bottom:1px solid #eadfa8;font-size:.76rem;padding:.35rem .8rem;color:#5a4a10}
+#ctx{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:.45rem .8rem;background:#EEEDFE;border-bottom:1px solid var(--line)}
+#ctx .btn{padding:.3rem .7rem;font-size:.75rem}
+#ctx .del{color:var(--bad);border-color:var(--bad)}
+#ctxName{font-size:.75rem;color:#3C3489;margin-inline-end:auto}
+#frame{flex:1;width:100%;border:0;background:#fff;min-height:0}
+#toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:#110e1c;color:#fff;padding:.5rem 1rem;border-radius:8px;font-size:.8rem;z-index:9}
+</style>
+</head>
+<body>
+
+<div id="gate" class="hide">
+  <h1 id="gTitle">لوحة التحكم</h1>
+  <p id="gMsg"></p>
+  <input type="email" id="em" autocomplete="username" placeholder="البريد الإلكتروني" dir="ltr">
+  <input type="password" id="pw" autocomplete="current-password" placeholder="كلمة المرور">
+  <button class="btn" id="gBtn" type="button">دخول</button>
+  <div id="err"></div>
+</div>
+
+<div id="picker" class="hide">
+  <h1>اختيار ملف الموقع</h1>
+  <p>تعذّر فتح index.html تلقائيًا. اختاري الملف من جهازك لبدء التعديل.</p>
+  <button class="btn" id="pickBtn" type="button">اختيار index.html</button>
+  <input type="file" id="file" accept=".html,.htm,.txt" class="hide">
+</div>
+
+<div id="app" class="hide">
+  <div id="bar">
+    <b>لوحة التحكم</b>
+    <span id="st">لا توجد تغييرات</span>
+    <button class="btn ok" id="pub" type="button">☁ نشر التعديلات</button>
+    <button class="btn ghost" id="save" type="button">⬇ نسخة احتياطية</button>
+    <a class="btn ghost" href="index.html" style="text-decoration:none">الموقع ↗</a>
+    <button class="btn ghost" id="out" type="button">خروج</button>
+  </div>
+  <div id="tip">انقري على أي نص لتعديله · انقري على صورة أو رابط أو بطاقة لتظهر أدوات التغيير والنسخ والحذف والترتيب · انقري على مهارة لحذفها. ثم اضغطي «نشر التعديلات» لتظهر للزوار مباشرة.</div>
+  <div id="ctx" class="hide">
+    <span id="ctxName">العنصر المحدد</span>
+    <button class="btn ghost" data-a="img" type="button">تغيير الصورة</button>
+    <button class="btn ghost" data-a="link" type="button">تعديل الرابط</button>
+    <button class="btn ghost" data-a="up" type="button">↑</button>
+    <button class="btn ghost" data-a="down" type="button">↓</button>
+    <button class="btn ghost" data-a="dup" type="button">نسخ</button>
+    <button class="btn ghost del" data-a="del" type="button">حذف</button>
+  </div>
+  <input type="file" id="imgIn" accept="image/*" class="hide">
+  <iframe id="frame" title="معاينة الموقع"></iframe>
+</div>
+
+<div id="toast" class="hide"></div>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var TK='adm_tok', EX='adm_exp', scripts=[], dirty=false, tok=null, C=window.SB||{}, act=null;
+  var frame=$('frame');
+
+  function toast(t){var e=$('toast');e.textContent=t;e.classList.remove('hide');clearTimeout(toast._t);toast._t=setTimeout(function(){e.classList.add('hide')},2500)}
+  function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+
+  /* ---------- Supabase: الدخول والاتصال ---------- */
+  function api(path,o){
+    o=o||{};
+    var h={apikey:C.key,'Content-Type':'application/json',Authorization:'Bearer '+(tok||C.key)};
+    if(o.prefer)h.Prefer=o.prefer;
+    return fetch(C.url+path,{method:o.method||'GET',headers:h,body:o.body});
+  }
+  function secs(d){
+    var o={},h=d.querySelector('.hero-wrap'),s=d.querySelector('.stats-row'),c=d.getElementById('contact'),f=d.querySelector('footer');
+    if(h)o.hero=h; if(s)o.stats=s;
+    [].forEach.call(d.querySelectorAll('.main > .card'),function(e,i){o['card-'+i]=e});
+    if(c)o.contact=c; if(f)o.footer=f; return o;
+  }
+  function gate(){
+    $('gate').classList.remove('hide');
+    $('gTitle').textContent='تسجيل الدخول';
+    $('gMsg').textContent='ادخلي ببريد وكلمة مرور حساب الأدمن.';
+    if(!C.url||!C.key){$('err').textContent='لم يتم ضبط site-config.js بعد';return}
+    function go(){
+      $('err').textContent='';
+      fetch(C.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:C.key,'Content-Type':'application/json'},
+        body:JSON.stringify({email:$('em').value.trim(),password:$('pw').value})})
+      .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
+      .then(function(o){
+        if(!o.ok){$('err').textContent='البريد أو كلمة المرور غير صحيحة';return}
+        tok=o.j.access_token;
+        try{sessionStorage.setItem(TK,tok);sessionStorage.setItem(EX,String(Date.now()+(o.j.expires_in||3600)*1000-60000))}catch(e){}
+        $('gate').classList.add('hide');start();
+      }).catch(function(){$('err').textContent='تعذّر الاتصال'});
+    }
+    $('gBtn').onclick=go;
+    $('pw').onkeydown=function(e){if(e.key==='Enter')go()};
+    $('em').focus();
+  }
+
+  /* ---------- تحميل الموقع ---------- */
+  function start(){
+    var urls=['index.html','index.txt'], i=0;
+    (function next(){
+      if(i>=urls.length){return needFile()}
+      fetch(urls[i++],{cache:'no-store'}).then(function(r){return r.ok?r.text():Promise.reject()})
+        .then(function(t){/<html/i.test(t)?build(t):next()}).catch(next);
+    })();
+  }
+  function needFile(){
+    $('picker').classList.remove('hide');
+    $('pickBtn').onclick=function(){$('file').click()};
+    $('file').onchange=function(){
+      var f=this.files[0]; if(!f)return;
+      var r=new FileReader();
+      r.onload=function(){$('picker').classList.add('hide');build(r.result)};
+      r.readAsText(f,'utf-8');
+    };
+  }
+
+  var ADMIN_CSS=
+    '[data-page]{display:block!important}'+
+    '.more-content{display:block!important}.more-btn{display:none!important}'+
+    '[data-aos]{opacity:1!important;transform:none!important}'+
+    '.ceb{display:flex!important}.tag-inp{display:inline-block!important}'+
+    '.tag{cursor:pointer}.tag:hover{text-decoration:line-through;opacity:.65}'+
+    '[contenteditable=true]{outline:1px dashed rgba(90,63,150,.35);outline-offset:2px;cursor:text}'+
+    '[contenteditable=true]:focus{outline:2px solid #5a3f96;background:#fffbe8}'+
+    '.adm-sel{outline:2px solid #7F77DD!important;outline-offset:3px}img,.art-cover,.proj-ico,.hero-emblem{cursor:pointer}'+
+    '.adm-add{display:flex;grid-column:1/-1;width:100%;align-items:center;justify-content:center;background:#fff;border:2px dashed #d5cced;border-radius:12px;padding:1rem;margin:.6rem 0;color:#5a3f96;font:600 .88rem inherit;cursor:pointer}'+
+    '.adm-add:hover{background:#ede8f7}';
+
+  function build(text){
+    var doc=new DOMParser().parseFromString(text,'text/html');
+    api('/rest/v1/site_content?select=id,html').then(function(r){return r.ok?r.json():[]}).catch(function(){return[]}).then(function(rows){
+      var S=secs(doc); rows.forEach(function(r){if(S[r.id]&&r.html)S[r.id].innerHTML=r.html}); finish(doc);
+    });
+  }
+  function finish(doc){
+    scripts=[];
+    Array.prototype.forEach.call(doc.querySelectorAll('script'),function(s,i){
+      scripts.push(s.outerHTML); s.parentNode.replaceChild(doc.createComment('ADMIN_SCRIPT_'+i),s);
+    });
+    var st=doc.createElement('style'); st.id='admin-css'; st.textContent=ADMIN_CSS; doc.head.appendChild(st);
+    doc.body.classList.add('edit-mode');
+    $('app').classList.remove('hide');
+    frame.onload=function(){init(frame.contentWindow,frame.contentDocument)};
+    frame.srcdoc='<!DOCTYPE html>'+doc.documentElement.outerHTML;
+  }
+
+  /* ---------- التعديل داخل المعاينة ---------- */
+  var SKIP='script,style,svg,img,button,input,textarea,.ceb,[data-admin],.tag';
+  function setDirty(){dirty=true;$('st').textContent='● تغييرات غير منشورة'}
+
+  function makeEditable(root,d){
+    var list=root.matches&&root.matches('*')?[root].concat([].slice.call(root.querySelectorAll('*'))):[].slice.call(root.querySelectorAll('*'));
+    list.forEach(function(el){
+      if(el.closest(SKIP))return;
+      var has=[].some.call(el.childNodes,function(n){return n.nodeType===3&&n.nodeValue.trim()});
+      if(has)el.setAttribute('contenteditable','true');
+    });
+  }
+
+  function init(w,d){
+    makeEditable(d.body,d);
+
+    d.addEventListener('input',function(e){if(e.target.isContentEditable)setDirty()});
+    d.addEventListener('keydown',function(e){
+      if(e.key==='Enter'&&e.target.isContentEditable){e.preventDefault();d.execCommand('insertLineBreak')}
+    });
+    d.addEventListener('paste',function(e){
+      if(!e.target.isContentEditable)return;
+      e.preventDefault();
+      d.execCommand('insertText',false,(e.clipboardData||w.clipboardData).getData('text'));
+    });
+    d.addEventListener('click',function(e){var a=e.target.closest('a');if(a)e.preventDefault()},true);
+
+    /* دوال الأزرار الموجودة في الصفحة الأصلية */
+    w.toggleMore=function(){};
+    w.removeTag=function(t){if(w.confirm('حذف هذه المهارة؟')){t.remove();setDirty()}};
+    w.addSkill=function(e){
+      if(e.key!=='Enter')return; e.preventDefault();
+      var inp=e.target,v=inp.value.trim(); if(!v)return;
+      var s=d.createElement('span'); s.className='tag tp'; s.textContent=v;
+      s.setAttribute('onclick','removeTag(this)'); inp.parentNode.insertBefore(s,inp);
+      inp.value=''; setDirty();
+    };
+    w.delCard=function(b){
+      var c=b.closest('.exp-item,.proj-card');
+      if(c&&w.confirm('حذف هذا العنصر نهائيًا؟')){c.remove();setDirty()}
+    };
+    function focusFirst(b){
+      var c=b.closest('.exp-item,.proj-card'), t=c&&c.querySelector('[contenteditable]');
+      if(t){t.scrollIntoView({block:'center'});t.focus()}
+    }
+    w.openEE=focusFirst; w.openEP=focusFirst;
+
+    var REP='.exp-item,.proj-card,.rec-card,.tl-item,.sc,.award-item,.research-item,.course-item,.art-card,.mf-card,.env,.mag-card,.stat';
+    var cur={},imgIn=$('imgIn');
+    function hideCtx(){$('ctx').classList.add('hide')}
+    d.addEventListener('click',function(e){
+      var t=e.target; if(!t.closest||t.closest('[data-admin],.ceb'))return;
+      cur.host=t.closest('img,.art-cover,.proj-ico,.hero-emblem'); cur.a=t.closest('a'); cur.rep=t.closest(REP);
+      [].forEach.call(d.querySelectorAll('.adm-sel'),function(x){x.classList.remove('adm-sel')});
+      if(cur.rep)cur.rep.classList.add('adm-sel');
+      $('ctx').classList.toggle('hide',!(cur.host||cur.a||cur.rep));
+      [].forEach.call($('ctx').querySelectorAll('button'),function(b){
+        var k=b.getAttribute('data-a'),on=k==='img'?cur.host:k==='link'?cur.a:cur.rep;
+        b.classList.toggle('hide',!on);
+      });
+    });
+    act=function(a){
+      var r=cur.rep;
+      if(a==='del'&&r){if(confirm('حذف هذا العنصر نهائيًا؟')){r.remove();hideCtx();setDirty()}}
+      else if(a==='dup'&&r){var c=r.cloneNode(true);c.classList.remove('adm-sel');r.parentNode.insertBefore(c,r.nextSibling);makeEditable(c,d);setDirty();toast('تم النسخ')}
+      else if(a==='up'&&r){var p=r.previousElementSibling;while(p&&p.hasAttribute('data-admin'))p=p.previousElementSibling;if(p&&p.matches(REP)){r.parentNode.insertBefore(r,p);setDirty()}}
+      else if(a==='down'&&r){var n=r.nextElementSibling;while(n&&n.hasAttribute('data-admin'))n=n.nextElementSibling;if(n&&n.matches(REP)){r.parentNode.insertBefore(n,r);setDirty()}}
+      else if(a==='link'&&cur.a){var v=prompt('الرابط:',cur.a.getAttribute('href')||'');if(v!==null){v=v.trim();cur.a.setAttribute('href',v);if(/^https?:/i.test(v)){cur.a.target='_blank';cur.a.rel='noopener'}setDirty();toast('تم تحديث الرابط')}}
+      else if(a==='img'&&cur.host){imgIn.click()}
+    };
+    imgIn.onchange=function(){
+      var f=imgIn.files[0],h=cur.host;imgIn.value='';if(!f||!h)return;
+      toast('جارٍ رفع الصورة…');
+      shrink(f).then(upload).then(function(u){
+        var im=h.tagName==='IMG'?h:h.querySelector('img');
+        if(!im){h.textContent='';h.style.padding='0';h.style.overflow='hidden';im=d.createElement('img');im.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block';im.alt='';h.appendChild(im)}
+        im.removeAttribute('srcset');im.src=u;setDirty();toast('تم تغيير الصورة');
+      }).catch(function(){toast('تعذّر رفع الصورة — شغّلي supabase-storage.sql أولًا')});
+    };
+
+    /* أزرار الإضافة */
+    function adder(label,fn,place){
+      var b=d.createElement('button'); b.type='button'; b.className='adm-add'; b.setAttribute('data-admin','');
+      b.textContent=label; b.onclick=fn; place(b);
+    }
+    var list=d.querySelector('#exp .exp-list');
+    if(list&&list.querySelector('.exp-item')){
+      adder('＋ إضافة خبرة',function(){
+        var c=list.querySelector('.exp-item').cloneNode(true); c.removeAttribute('style');
+        var set=function(s,t){var x=c.querySelector(s);if(x)x.textContent=t};
+        set('.exp-role','المسمى — الجهة'); set('.exp-period','الفترة'); set('.exp-org','نوع التدريب'); set('.exp-desc','وصف التجربة');
+        list.insertBefore(c,list.firstChild); makeEditable(c,d); setDirty(); c.scrollIntoView({block:'center'});
+      },function(b){list.insertAdjacentElement('afterend',b)});
+    }
+    var grid=d.getElementById('projGrid'), pc=grid&&grid.querySelector('.proj-card');
+    if(pc){
+      adder('＋ إضافة مشروع',function(){
+        var c=pc.cloneNode(true);
+        var ico=c.querySelector('.proj-ico'); if(ico){ico.removeAttribute('style');ico.className='proj-ico ipp';ico.textContent='📁'}
+        c.querySelector('.proj-name').textContent='اسم المشروع';
+        c.querySelector('.proj-desc').textContent='وصف المشروع';
+        [].forEach.call(c.querySelectorAll('.att-gallery,.att-img,.proj-link'),function(x){x.remove()});
+        var chips=c.querySelector('.proj-chips');
+        if(chips){chips.innerHTML='<span class="proj-chip">وسم</span>'}
+        grid.insertBefore(c,grid.querySelector('.proj-card')); makeEditable(c,d); setDirty(); c.scrollIntoView({block:'center'});
+      },function(b){grid.appendChild(b)});
+    }
+    var ag=d.getElementById('artGrid'),ac=ag&&ag.querySelector('.art-card');
+    if(ac){
+      adder('＋ إضافة مقال',function(){
+        var c=ac.cloneNode(true);c.classList.remove('adm-sel');
+        c.querySelector('.art-title').textContent='عنوان المقال';
+        c.querySelector('.art-cat').textContent='التصنيف';
+        c.querySelector('.art-more').setAttribute('href','#');
+        c.querySelector('.art-cover').innerHTML='';
+        ag.insertBefore(c,ag.firstChild);makeEditable(c,d);setDirty();c.scrollIntoView({block:'center'});
+      },function(b){ag.insertAdjacentElement('afterend',b)});
+    }
+  }
+
+  function shrink(f){
+    return new Promise(function(res){
+      if(f.size<600000||!/^image\/(jpeg|webp)/.test(f.type))return res(f);
+      var im=new Image(),u=URL.createObjectURL(f);
+      im.onload=function(){var k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(function(b){res(b||f)},'image/jpeg',.85)};
+      im.onerror=function(){res(f)};im.src=u;
+    });
+  }
+  function upload(b){
+    var ext=((b.type||'image/jpeg').split('/')[1]||'jpg').replace('jpeg','jpg').replace('svg+xml','svg');
+    var name='img-'+Date.now()+'-'+Math.floor(Math.random()*1e4)+'.'+ext;
+    return fetch(C.url+'/storage/v1/object/site-assets/'+name,{method:'POST',headers:{apikey:C.key,Authorization:'Bearer '+tok,'Content-Type':b.type||'image/jpeg'},body:b})
+      .then(function(r){if(!r.ok)throw 0;return C.url+'/storage/v1/object/public/site-assets/'+name});
+  }
+  function pack(el){
+    return [].slice.call(el.querySelectorAll('img[src^="data:"]')).reduce(function(p,im){
+      return p.then(function(){return fetch(im.src).then(function(r){return r.blob()}).then(upload).then(function(u){im.src=u})});
+    },Promise.resolve());
+  }
+  function clean(c){
+    [].forEach.call(c.querySelectorAll('[data-admin]'),function(x){x.remove()});
+    [].forEach.call(c.querySelectorAll('[contenteditable]'),function(x){x.removeAttribute('contenteditable')});
+    [].forEach.call(c.querySelectorAll('.adm-sel'),function(x){x.classList.remove('adm-sel');if(!x.className)x.removeAttribute('class')});
+  }
+
+  /* ---------- التصدير ---------- */
+  function exportHtml(){
+    var d=frame.contentDocument; if(!d)return;
+    var c=d.documentElement.cloneNode(true);
+    [].forEach.call(c.querySelectorAll('[data-admin],#admin-css'),function(x){x.remove()});
+    clean(c);
+    var b=c.querySelector('body'); b.classList.remove('edit-mode'); if(!b.className)b.removeAttribute('class');
+    var s='<!DOCTYPE html>\n'+c.outerHTML.replace(/<!--ADMIN_SCRIPT_(\d+)-->/g,function(_,i){return scripts[+i]});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([s],{type:'text/html;charset=utf-8'}));
+    a.download='index.html'; document.body.appendChild(a); a.click(); a.remove();
+    dirty=false; $('st').textContent='تم التحميل ✓'; toast('تم تحميل index.html — ارفعيه مكان الملف القديم');
+  }
+  function publish(){
+    if(Date.now()>+(sessionStorage.getItem(EX)||0)){toast('انتهت الجلسة، سجّلي الدخول من جديد');return}
+    var S=secs(frame.contentDocument),rows=[],skipped=0,now=new Date().toISOString();
+    $('pub').disabled=true;toast('جارٍ النشر…');
+    Object.keys(S).reduce(function(p,k){
+      return p.then(function(){return pack(S[k]).catch(function(){})}).then(function(){
+        var c=S[k].cloneNode(true);clean(c);var h=c.innerHTML;
+        if(h.indexOf('data:image')>-1||h.indexOf('ADMIN_SCRIPT')>-1){skipped++;return}
+        rows.push({id:k,html:h,updated_at:now});
+      });
+    },Promise.resolve()).then(function(){
+      return api('/rest/v1/site_content?on_conflict=id',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify(rows)});
+    }).then(function(r){
+      if(r.ok){dirty=false;$('st').textContent='تم النشر ✓';toast('تم نشر التعديلات'+(skipped?' (تخطّي '+skipped+' قسم: شغّلي supabase-storage.sql لرفع صوره)':''))}
+      else if(r.status===401||r.status===403)toast('الجلسة منتهية أو لا تملكين صلاحية الكتابة');
+      else toast('تعذّر النشر ('+r.status+')');
+    }).catch(function(){toast('تعذّر الاتصال')}).then(function(){$('pub').disabled=false});
+  }
+  $('pub').onclick=publish;
+  $('ctx').onclick=function(e){var b=e.target.closest('button');if(b&&act)act(b.getAttribute('data-a'))};
+  $('save').onclick=exportHtml;
+  $('out').onclick=function(){
+    if(dirty&&!confirm('لديك تغييرات لم تُحمَّل. الخروج دون حفظ؟'))return;
+    try{sessionStorage.removeItem(TK)}catch(e){} dirty=false; location.reload();
+  };
+  window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}});
+
+  /* ---------- البداية ---------- */
+  try{
+    if(+sessionStorage.getItem(EX)>Date.now()&&sessionStorage.getItem(TK)){tok=sessionStorage.getItem(TK);start();return}
+  }catch(e){}
+  gate();
+})();
+</script>
+</body>
+</html>
