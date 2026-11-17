@@ -2,53 +2,146 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#3a2768">
 <title>لوحة التحكم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--p:#3a2768;--pm:#5a3f96;--bg:#f8f6fd;--ok:#1f9e6e;--bad:#d94f4f;--line:#e2dbf2}
+:root{--p:#3a2768;--pm:#5a3f96;--rose:#7b3d6a;--gold:#b89050;--bg:#f8f6fd;--ok:#1f9e6e;--bad:#d94f4f;--line:#e2dbf2;--ink:#110e1c;--soft:#3d3356;--faint:#8b80a8;--sh:0 14px 44px rgba(58,39,104,.18)}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
-body{font-family:'IBM Plex Sans Arabic',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:#110e1c;display:flex;flex-direction:column}
+body{font-family:'IBM Plex Sans Arabic',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 .hide{display:none!important}
-button{font-family:inherit;cursor:pointer}
-/* gate */
-#gate,#picker{margin:auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.6rem;width:min(92vw,360px);box-shadow:0 10px 40px rgba(58,39,104,.15);text-align:center}
-#gate h1,#picker h1{font-size:1.1rem;color:var(--p);margin-bottom:.4rem}
-#gate p,#picker p{font-size:.82rem;color:#3d3356;margin-bottom:1rem;line-height:1.7}
-input[type=password],input[type=email]{width:100%;padding:.65rem .8rem;border:1px solid var(--line);border-radius:8px;font:inherit;margin-bottom:.7rem;text-align:center}
-.btn{background:var(--p);color:#fff;border:0;border-radius:8px;padding:.55rem 1.1rem;font-size:.85rem;font-weight:600}
-.btn.ok{background:var(--ok)}
-.btn.ghost{background:#fff;color:var(--p);border:1px solid var(--line)}
-#err{color:var(--bad);font-size:.78rem;min-height:1.1rem;margin-top:.5rem}
-/* app */
-#app{flex:1;display:flex;flex-direction:column;min-height:0}
-#bar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.55rem .8rem;background:var(--p);color:#fff}
-#bar b{font-size:.9rem;margin-inline-end:auto}
-#st{font-size:.74rem;opacity:.85}
-#bar .btn{padding:.4rem .8rem;font-size:.78rem}
-#bar .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
-#tip{background:#fffbe8;border-bottom:1px solid #eadfa8;font-size:.76rem;padding:.35rem .8rem;color:#5a4a10}
-#ctx{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:.45rem .8rem;background:#EEEDFE;border-bottom:1px solid var(--line)}
-#ctx .btn{padding:.3rem .7rem;font-size:.75rem}
-#ctx .del{color:var(--bad);border-color:var(--bad)}
-#ctxName{font-size:.75rem;color:#3C3489;margin-inline-end:auto}
-#frame{flex:1;width:100%;border:0;background:#fff;min-height:0}
-#toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:#110e1c;color:#fff;padding:.5rem 1rem;border-radius:8px;font-size:.8rem;z-index:9}
+button,input{font-family:inherit}
+button{cursor:pointer}
+.i{width:1.1em;height:1.1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:3px solid rgba(184,144,80,.55);outline-offset:2px}
+
+/* خلفية شاشة الدخول */
+#bgfx{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(155deg,#241645 0%,var(--p) 42%,var(--pm) 78%,var(--rose) 100%)}
+#bgfx i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:float 14s ease-in-out infinite}
+#bgfx i:nth-child(1){width:46vmax;height:46vmax;background:#7b5cc4;top:-18vmax;right:-14vmax}
+#bgfx i:nth-child(2){width:38vmax;height:38vmax;background:var(--rose);bottom:-16vmax;left:-12vmax;animation-delay:-5s}
+#bgfx i:nth-child(3){width:22vmax;height:22vmax;background:var(--gold);opacity:.28;top:38%;left:30%;animation-delay:-9s}
+#bgfx::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1px);background-size:26px 26px}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(3vmax,-2vmax) scale(1.08)}}
+
+/* بطاقة الدخول والاختيار */
+#gate,#picker{position:relative;z-index:1;margin:auto;width:min(92vw,400px);padding:2rem 1.7rem 1.7rem;text-align:center;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.7);border-radius:24px;box-shadow:0 30px 80px rgba(20,10,50,.45);animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.mark{width:68px;height:68px;margin:-3.4rem auto 1rem;border-radius:20px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,var(--pm),var(--p));border:3px solid #fff;box-shadow:0 12px 28px rgba(58,39,104,.4)}
+.mark .i{width:32px;height:32px;stroke-width:1.7}
+#gate h1,#picker h1{font-size:1.3rem;font-weight:700;color:var(--p);margin-bottom:.35rem}
+#gate p,#picker p{font-size:.84rem;color:var(--soft);margin-bottom:1.3rem;line-height:1.8}
+.fld{position:relative;margin-bottom:.8rem}
+.fld>.i{position:absolute;inset-inline-start:.9rem;top:50%;transform:translateY(-50%);color:var(--faint);pointer-events:none}
+.fld input{width:100%;padding:.8rem 2.6rem;border:1.5px solid var(--line);border-radius:12px;font-size:.92rem;background:#fff;color:var(--ink);text-align:center;transition:border-color .2s,box-shadow .2s}
+.fld input:focus{outline:0;border-color:var(--pm);box-shadow:0 0 0 4px rgba(90,63,150,.14)}
+#pwTog{position:absolute;inset-inline-end:.35rem;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;color:var(--faint);border-radius:10px;display:grid;place-items:center}
+#pwTog:hover{color:var(--p);background:#f3effb}
+#gBtn{width:100%;padding:.85rem;font-size:.95rem;border-radius:12px;margin-top:.3rem}
+#err{color:var(--bad);font-size:.8rem;font-weight:500;min-height:1.2rem;margin-top:.8rem}
+#err.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.foot-note{margin-top:1rem;font-size:.7rem;color:var(--faint);display:flex;align-items:center;justify-content:center;gap:.35rem}
+
+/* أزرار */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;background:linear-gradient(135deg,var(--pm),var(--p));color:#fff;border:0;border-radius:10px;padding:.55rem 1.1rem;font-size:.85rem;font-weight:600;text-decoration:none;white-space:nowrap;box-shadow:0 6px 16px rgba(58,39,104,.28);transition:transform .15s,box-shadow .2s,background .2s,opacity .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(58,39,104,.34)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+.btn.ok{background:linear-gradient(135deg,#27b484,var(--ok));box-shadow:0 6px 16px rgba(31,158,110,.35)}
+.btn.ghost{background:#fff;color:var(--p);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover{background:#f3effb;box-shadow:none}
+.btn.busy{position:relative;color:transparent!important;pointer-events:none}
+.btn.busy::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* التطبيق */
+#app{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-height:0}
+#bar{display:flex;align-items:center;gap:.6rem .9rem;flex-wrap:wrap;padding:calc(.65rem + env(safe-area-inset-top)) .9rem .65rem;background:linear-gradient(115deg,#241645,var(--p) 55%,var(--pm));color:#fff;box-shadow:0 8px 26px rgba(36,22,69,.3);position:relative;z-index:5}
+.brand{display:flex;align-items:center;gap:.6rem;margin-inline-end:auto}
+.brand .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#f0d9a8}
+.brand b{font-size:1rem;font-weight:700;letter-spacing:.2px}
+#st{display:inline-flex;align-items:center;gap:.45rem;font-size:.74rem;font-weight:500;padding:.3rem .75rem;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)}
+#st::before{content:"";width:8px;height:8px;border-radius:50%;background:#b9b0d6}
+#st.dirty{background:rgba(255,196,77,.18);border-color:rgba(255,196,77,.45)}
+#st.dirty::before{background:#ffc44d;animation:pulse 1.4s infinite}
+#st.ok{background:rgba(60,214,154,.16);border-color:rgba(60,214,154,.4)}
+#st.ok::before{background:#3cd69a}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,196,77,.6)}100%{box-shadow:0 0 0 8px rgba(255,196,77,0)}}
+.acts{display:flex;gap:.45rem;align-items:center}
+#bar .btn{padding:.5rem .95rem;font-size:.8rem}
+#bar .btn.ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.28)}
+#bar .btn.ghost:hover{background:rgba(255,255,255,.18)}
+
+#tip{display:flex;align-items:flex-start;gap:.6rem;margin:.7rem .8rem 0;padding:.6rem .8rem;font-size:.78rem;line-height:1.75;color:#5a4a10;background:linear-gradient(135deg,#fffbe8,#fff4d6);border:1px solid #ecdca0;border-radius:14px}
+#tip .i{color:var(--gold);margin-top:.2rem}
+#tip span{flex:1}
+#tipX{border:0;background:rgba(90,74,16,.08);color:#5a4a10;width:26px;height:26px;border-radius:8px;display:grid;place-items:center}
+#tipX:hover{background:rgba(90,74,16,.18)}
+
+/* شريط أدوات العنصر المحدد */
+#ctx{position:fixed;z-index:20;bottom:calc(1rem + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);max-width:94vw;display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;align-items:center;padding:.55rem .65rem;background:rgba(20,12,40,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 18px 50px rgba(10,5,30,.5);animation:pop .22s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes pop{from{opacity:0;transform:translate(-50%,10px) scale(.95)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+#ctxName{font-size:.72rem;color:#cfc6ec;padding:0 .5rem}
+#ctx .btn{padding:.45rem .75rem;font-size:.76rem;border-radius:11px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.14);box-shadow:none}
+#ctx .btn:hover{background:rgba(255,255,255,.2)}
+#ctx .del{color:#ff9a9a;border-color:rgba(255,120,120,.4)}
+#ctx .del:hover{background:rgba(217,79,79,.3)}
+
+#frame{flex:1;width:calc(100% - 1.2rem);margin:.7rem auto;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--sh);min-height:0}
+
+/* شاشة التحميل */
+#loader{position:fixed;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:rgba(248,246,253,.92);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--p);font-size:.9rem;font-weight:600}
+#loader::before{content:"";width:46px;height:46px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--pm);animation:spin .8s linear infinite}
+
+/* إشعار */
+#toast{position:fixed;z-index:30;top:calc(4.6rem + env(safe-area-inset-top));left:50%;transform:translateX(-50%);max-width:92vw;display:flex;align-items:center;gap:.55rem;background:rgba(17,14,28,.94);color:#fff;padding:.65rem 1.1rem;border-radius:14px;font-size:.82rem;font-weight:500;box-shadow:0 14px 40px rgba(0,0,0,.35);animation:drop .3s cubic-bezier(.2,.9,.3,1.2) both}
+#toast::before{content:"";width:9px;height:9px;border-radius:50%;background:#b9b0d6;flex:none}
+#toast.ok::before{background:#3cd69a}
+#toast.bad::before{background:#ff6b6b}
+@keyframes drop{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
+
+@media(max-width:640px){
+  #bar{padding-inline:.7rem}
+  .acts{width:100%}
+  .acts .btn{flex:1}
+  .acts #pub{flex:2.2}
+  .acts .ghost .lbl{display:none}
+  #frame{width:calc(100% - .6rem);margin:.5rem auto;border-radius:14px}
+  #tip{margin:.5rem .4rem 0}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
 </head>
 <body>
 
+<div id="bgfx" aria-hidden="true"><i></i><i></i><i></i></div>
+
 <div id="gate" class="hide">
+  <div class="mark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0L5 7zM19 7l-3 7a3 3 0 0 0 6 0l-3-7z"/></svg></div>
   <h1 id="gTitle">لوحة التحكم</h1>
   <p id="gMsg"></p>
-  <input type="email" id="em" autocomplete="username" placeholder="البريد الإلكتروني" dir="ltr">
-  <input type="password" id="pw" autocomplete="current-password" placeholder="كلمة المرور">
+  <div class="fld">
+    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg>
+    <input type="email" id="em" autocomplete="username" placeholder="البريد الإلكتروني" dir="ltr">
+  </div>
+  <div class="fld">
+    <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+    <input type="password" id="pw" autocomplete="current-password" placeholder="كلمة المرور">
+    <button type="button" id="pwTog" aria-label="إظهار كلمة المرور" title="إظهار / إخفاء"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+  </div>
   <button class="btn" id="gBtn" type="button">دخول</button>
-  <div id="err"></div>
+  <div id="err" role="alert" aria-live="polite"></div>
+  <div class="foot-note"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6l-8-3z"/></svg>منطقة مخصّصة للمسؤولة فقط</div>
 </div>
 
 <div id="picker" class="hide">
+  <div class="mark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg></div>
   <h1>اختيار ملف الموقع</h1>
   <p>تعذّر فتح index.html تلقائيًا. اختاري الملف من جهازك لبدء التعديل.</p>
   <button class="btn" id="pickBtn" type="button">اختيار index.html</button>
@@ -57,37 +150,50 @@ input[type=password],input[type=email]{width:100%;padding:.65rem .8rem;border:1p
 
 <div id="app" class="hide">
   <div id="bar">
-    <b>لوحة التحكم</b>
+    <div class="brand">
+      <span class="logo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0L5 7zM19 7l-3 7a3 3 0 0 0 6 0l-3-7z"/></svg></span>
+      <b>لوحة التحكم</b>
+    </div>
     <span id="st">لا توجد تغييرات</span>
-    <button class="btn ok" id="pub" type="button">☁ نشر التعديلات</button>
-    <button class="btn ghost" id="save" type="button">⬇ نسخة احتياطية</button>
-    <a class="btn ghost" href="index.html" style="text-decoration:none">الموقع ↗</a>
-    <button class="btn ghost" id="out" type="button">خروج</button>
+    <div class="acts">
+      <button class="btn ok" id="pub" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 9.5a4.2 4.2 0 0 1-.5 8.5H7z"/><path d="M12 16v-5m0 0-2 2m2-2 2 2"/></svg><span class="lbl">نشر التعديلات</span></button>
+      <button class="btn ghost" id="save" type="button" title="نسخة احتياطية" aria-label="نسخة احتياطية"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg><span class="lbl">نسخة احتياطية</span></button>
+      <a class="btn ghost" href="index.html" title="الموقع" aria-label="الموقع"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span class="lbl">الموقع</span></a>
+      <button class="btn ghost" id="out" type="button" title="خروج" aria-label="خروج"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg><span class="lbl">خروج</span></button>
+    </div>
   </div>
-  <div id="tip">انقري على أي نص لتعديله · انقري على صورة أو رابط أو بطاقة لتظهر أدوات التغيير والنسخ والحذف والترتيب · انقري على مهارة لحذفها. ثم اضغطي «نشر التعديلات» لتظهر للزوار مباشرة.</div>
+  <div id="tip"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg><span>انقري على أي نص لتعديله · انقري على صورة أو رابط أو بطاقة لتظهر أدوات التغيير والنسخ والحذف والترتيب · انقري على مهارة لحذفها. ثم اضغطي «نشر التعديلات» لتظهر للزوار مباشرة.</span><button id="tipX" type="button" aria-label="إغلاق التلميح"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div id="ctx" class="hide">
     <span id="ctxName">العنصر المحدد</span>
-    <button class="btn ghost" data-a="img" type="button">تغيير الصورة</button>
-    <button class="btn ghost" data-a="link" type="button">تعديل الرابط</button>
-    <button class="btn ghost" data-a="up" type="button">↑</button>
-    <button class="btn ghost" data-a="down" type="button">↓</button>
-    <button class="btn ghost" data-a="dup" type="button">نسخ</button>
-    <button class="btn ghost del" data-a="del" type="button">حذف</button>
+    <button class="btn ghost" data-a="img" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/></svg>تغيير الصورة</button>
+    <button class="btn ghost" data-a="link" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></svg>تعديل الرابط</button>
+    <button class="btn ghost" data-a="up" type="button" aria-label="تحريك للأعلى" title="تحريك للأعلى"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg></button>
+    <button class="btn ghost" data-a="down" type="button" aria-label="تحريك للأسفل" title="تحريك للأسفل"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m0 0-6-6m6 6 6-6"/></svg></button>
+    <button class="btn ghost" data-a="dup" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>نسخ</button>
+    <button class="btn ghost del" data-a="del" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>حذف</button>
   </div>
   <input type="file" id="imgIn" accept="image/*" class="hide">
   <iframe id="frame" title="معاينة الموقع"></iframe>
 </div>
 
-<div id="toast" class="hide"></div>
+<div id="loader" class="hide" role="status">جارٍ تحميل الموقع…</div>
+<div id="toast" class="hide" role="status" aria-live="polite"></div>
 <script src="site-config.js"></script>
-  
+
 <script>
 (function(){
   var $=function(i){return document.getElementById(i)};
   var TK='adm_tok', EX='adm_exp', scripts=[], dirty=false, tok=null, C=window.SB||{}, act=null;
   var frame=$('frame');
 
-  function toast(t){var e=$('toast');e.textContent=t;e.classList.remove('hide');clearTimeout(toast._t);toast._t=setTimeout(function(){e.classList.add('hide')},2500)}
+  function toast(t){
+    var e=$('toast');
+    e.textContent=t;
+    e.className=/تعذّر|انتهت|لا تملكين/.test(t)?'bad':/^تم/.test(t)?'ok':'';
+    clearTimeout(toast._t);
+    toast._t=setTimeout(function(){e.classList.add('hide')},3200);
+  }
+  function setSt(t,c){var e=$('st');e.textContent=t;e.className=c||''}
   function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 
   /* ---------- Supabase: الدخول والاتصال ---------- */
@@ -104,17 +210,42 @@ input[type=password],input[type=email]{width:100%;padding:.65rem .8rem;border:1p
     if(c)o.contact=c; if(f)o.footer=f; return o;
   }
 function gate(){
+  var ADMIN_UID='e38c1f6d-1ca7-4db4-a7f6-b9ab9489aabe';
+  var busy=false;
+
   $('gate').classList.remove('hide');
   $('gTitle').textContent='تسجيل الدخول';
   $('gMsg').textContent='ادخلي ببريد وكلمة مرور حساب الأدمن.';
 
+  function showErr(m){
+    var e=$('err');
+    e.textContent=m;
+    e.classList.remove('shake');
+    void e.offsetWidth;
+    if(m)e.classList.add('shake');
+  }
+  function setBusy(b){
+    busy=b;
+    $('gBtn').disabled=b;
+    $('gBtn').classList.toggle('busy',b);
+  }
+
   if(!C.url||!C.key){
-    $('err').textContent='لم يتم ضبط site-config.js بعد';
+    showErr('لم يتم ضبط site-config.js بعد');
     return;
   }
 
   function go(){
-    $('err').textContent='';
+    if(busy)return;
+    var email=$('em').value.trim(), pass=$('pw').value;
+    showErr('');
+
+    if(!email||!pass){
+      showErr('أدخلي البريد الإلكتروني وكلمة المرور');
+      return;
+    }
+
+    setBusy(true);
 
     fetch(C.url+'/auth/v1/token?grant_type=password',{
       method:'POST',
@@ -122,39 +253,41 @@ function gate(){
         apikey:C.key,
         'Content-Type':'application/json'
       },
-      body:JSON.stringify({
-        email:$('em').value.trim(),
-        password:$('pw').value
-      })
+      body:JSON.stringify({email:email,password:pass})
     })
     .then(function(r){
-      return r.json().then(function(j){
-        return {ok:r.ok,j:j};
+      return r.json().catch(function(){return {};}).then(function(j){
+        return {ok:r.ok,status:r.status,j:j};
       });
     })
     .then(function(o){
 
       if(!o.ok){
-        $('err').textContent='البريد أو كلمة المرور غير صحيحة';
+        showErr(
+          o.status===429 ? 'محاولات كثيرة، حاولي مرة أخرى بعد قليل' :
+          o.status>=500 ? 'الخادم غير متاح مؤقتًا، حاولي لاحقًا' :
+          'البريد أو كلمة المرور غير صحيحة'
+        );
+        setBusy(false);
         return;
       }
 
       // التحقق من هوية المدير الوحيد
-      var ADMIN_UID='e38c1f6d-1ca7-4db4-a7f6-b9ab9489aabe';
-
       if(!o.j.user || o.j.user.id !== ADMIN_UID){
-        $('err').textContent='ليس لديك صلاحية الدخول إلى لوحة الإدارة.';
+        showErr('ليس لديك صلاحية الدخول إلى لوحة الإدارة.');
+        setBusy(false);
 
         // إنهاء الجلسة لغير المدير
         tok=null;
 
+        if(!o.j.access_token)return;
         return fetch(C.url+'/auth/v1/logout',{
           method:'POST',
           headers:{
             apikey:C.key,
             Authorization:'Bearer '+o.j.access_token
           }
-        });
+        }).catch(function(){});
       }
 
       // حفظ جلسة المدير بعد التحقق من هويته
@@ -170,12 +303,12 @@ function gate(){
 
       $('gate').classList.add('hide');
       start();
-
     })
-.catch(function(error){
-  console.error('Supabase Login Error:', error);
-  $('err').textContent='خطأ: '+error.message;
-});
+    .catch(function(error){
+      console.error('Supabase Login Error:', error);
+      showErr('تعذّر الاتصال بالخادم، تحقّقي من الإنترنت وحاولي مجددًا');
+      setBusy(false);
+    });
   }
 
   $('gBtn').onclick=go;
@@ -184,17 +317,26 @@ function gate(){
     if(e.key==='Enter')go();
   };
 
+  $('em').onkeydown=function(e){
+    if(e.key==='Enter'){
+      if($('pw').value)go(); else $('pw').focus();
+    }
+  };
+
+  $('pwTog').onclick=function(){
+    var p=$('pw'),show=p.type==='password';
+    p.type=show?'text':'password';
+    this.setAttribute('aria-label',show?'إخفاء كلمة المرور':'إظهار كلمة المرور');
+    p.focus();
+  };
+
   $('em').focus();
 }
-    }
-    $('gBtn').onclick=go;
-    $('pw').onkeydown=function(e){if(e.key==='Enter')go()};
-    $('em').focus();
-  }
 
   /* ---------- تحميل الموقع ---------- */
   function start(){
     var urls=['index.html','index.txt'], i=0;
+    $('loader').classList.remove('hide');
     (function next(){
       if(i>=urls.length){return needFile()}
       fetch(urls[i++],{cache:'no-store'}).then(function(r){return r.ok?r.text():Promise.reject()})
@@ -202,6 +344,7 @@ function gate(){
     })();
   }
   function needFile(){
+    $('loader').classList.add('hide');
     $('picker').classList.remove('hide');
     $('pickBtn').onclick=function(){$('file').click()};
     $('file').onchange=function(){
@@ -220,13 +363,13 @@ function gate(){
     '.tag{cursor:pointer}.tag:hover{text-decoration:line-through;opacity:.65}'+
     '[contenteditable=true]{outline:1px dashed rgba(90,63,150,.35);outline-offset:2px;cursor:text}'+
     '[contenteditable=true]:focus{outline:2px solid #5a3f96;background:#fffbe8}'+
-    '.adm-sel{outline:2px solid #7F77DD!important;outline-offset:3px}img,.art-cover,.proj-ico,.hero-emblem{cursor:pointer}'+
+    '.adm-sel{outline:2px solid #7F77DD!important;outline-offset:3px;box-shadow:0 0 0 7px rgba(127,119,221,.16)!important;border-radius:10px}img,.art-cover,.proj-ico,.hero-emblem{cursor:pointer}'+
     '.adm-add{display:flex;grid-column:1/-1;width:100%;align-items:center;justify-content:center;background:#fff;border:2px dashed #d5cced;border-radius:12px;padding:1rem;margin:.6rem 0;color:#5a3f96;font:600 .88rem inherit;cursor:pointer}'+
-    '.adm-add:hover{background:#ede8f7}';
+    '.adm-add:hover{background:#ede8f7;border-color:#9a8bd0}';
 
   function build(text){
     var doc=new DOMParser().parseFromString(text,'text/html');
-    api('/rest/v1/site_content?select=id,html').then(function(r){return r.ok?r.json():[]}).catch(function(){return[]}).then(function(rows){
+    api('/rest/v1/site_content?select=id,html').then(function(r){if(r.status===401)toast('انتهت الجلسة، سجّلي الدخول من جديد');return r.ok?r.json():[]}).catch(function(){return[]}).then(function(rows){
       var S=secs(doc); rows.forEach(function(r){if(S[r.id]&&r.html)S[r.id].innerHTML=r.html}); finish(doc);
     });
   }
@@ -238,13 +381,14 @@ function gate(){
     var st=doc.createElement('style'); st.id='admin-css'; st.textContent=ADMIN_CSS; doc.head.appendChild(st);
     doc.body.classList.add('edit-mode');
     $('app').classList.remove('hide');
-    frame.onload=function(){init(frame.contentWindow,frame.contentDocument)};
+    $('bgfx').classList.add('hide');
+    frame.onload=function(){$('loader').classList.add('hide');init(frame.contentWindow,frame.contentDocument)};
     frame.srcdoc='<!DOCTYPE html>'+doc.documentElement.outerHTML;
   }
 
   /* ---------- التعديل داخل المعاينة ---------- */
   var SKIP='script,style,svg,img,button,input,textarea,.ceb,[data-admin],.tag';
-  function setDirty(){dirty=true;$('st').textContent='● تغييرات غير منشورة'}
+  function setDirty(){dirty=true;setSt('تغييرات غير منشورة','dirty')}
 
   function makeEditable(root,d){
     var list=root.matches&&root.matches('*')?[root].concat([].slice.call(root.querySelectorAll('*'))):[].slice.call(root.querySelectorAll('*'));
@@ -398,12 +542,12 @@ function gate(){
     var a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([s],{type:'text/html;charset=utf-8'}));
     a.download='index.html'; document.body.appendChild(a); a.click(); a.remove();
-    dirty=false; $('st').textContent='تم التحميل ✓'; toast('تم تحميل index.html — ارفعيه مكان الملف القديم');
+    dirty=false; setSt('تم التحميل ✓','ok'); toast('تم تحميل index.html — ارفعيه مكان الملف القديم');
   }
   function publish(){
     if(Date.now()>+(sessionStorage.getItem(EX)||0)){toast('انتهت الجلسة، سجّلي الدخول من جديد');return}
     var S=secs(frame.contentDocument),rows=[],skipped=0,now=new Date().toISOString();
-    $('pub').disabled=true;toast('جارٍ النشر…');
+    $('pub').disabled=true;$('pub').classList.add('busy');toast('جارٍ النشر…');
     Object.keys(S).reduce(function(p,k){
       return p.then(function(){return pack(S[k]).catch(function(){})}).then(function(){
         var c=S[k].cloneNode(true);clean(c);var h=c.innerHTML;
@@ -413,12 +557,13 @@ function gate(){
     },Promise.resolve()).then(function(){
       return api('/rest/v1/site_content?on_conflict=id',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify(rows)});
     }).then(function(r){
-      if(r.ok){dirty=false;$('st').textContent='تم النشر ✓';toast('تم نشر التعديلات'+(skipped?' (تخطّي '+skipped+' قسم: شغّلي supabase-storage.sql لرفع صوره)':''))}
+      if(r.ok){dirty=false;setSt('تم النشر ✓','ok');toast('تم نشر التعديلات'+(skipped?' (تخطّي '+skipped+' قسم: شغّلي supabase-storage.sql لرفع صوره)':''))}
       else if(r.status===401||r.status===403)toast('الجلسة منتهية أو لا تملكين صلاحية الكتابة');
       else toast('تعذّر النشر ('+r.status+')');
-    }).catch(function(){toast('تعذّر الاتصال')}).then(function(){$('pub').disabled=false});
+    }).catch(function(){toast('تعذّر الاتصال')}).then(function(){$('pub').disabled=false;$('pub').classList.remove('busy')});
   }
   $('pub').onclick=publish;
+  $('tipX').onclick=function(){$('tip').classList.add('hide')};
   $('ctx').onclick=function(e){var b=e.target.closest('button');if(b&&act)act(b.getAttribute('data-a'))};
   $('save').onclick=exportHtml;
   $('out').onclick=function(){
