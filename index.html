@@ -416,6 +416,62 @@ footer strong{color:rgba(255,255,255,.85)}
 .env-group-h::before,.env-group-h::after{content:'';flex:1;height:1px;background:var(--divider)}
 .env-hint{text-align:center;font-size:.74rem;color:var(--ink-faint);margin-top:.8rem}
 @media(prefers-reduced-motion:reduce){.env,.env-flap,.env-letter,.env-seal{transition:none}}
+/* HERO v2 — شعار كبير في المنتصف */
+.hero-wrap{padding:3.4rem 1.5rem 5rem;background:linear-gradient(160deg,var(--purple-mid) 0%,var(--purple) 100%)}
+.hero-inner{grid-template-columns:1fr;justify-items:center;text-align:center;gap:1.5rem}
+.hero-emblem{display:flex!important;order:-1;width:156px;height:156px;border-radius:50%;border:3px solid rgba(255,255,255,.85);box-shadow:0 12px 36px rgba(0,0,0,.25)}
+.hero-emblem img{border-radius:50%!important}
+.hero-name{font-weight:700}
+.hero-name::after{content:'';display:block;width:56px;height:3px;background:var(--gold);border-radius:2px;margin:.8rem auto 0}
+.hero-title{opacity:.92}
+.hero-bio{margin-inline:auto}
+.hero-chips,.hero-btns{justify-content:center}
+.btn-w,.btn-g{border-radius:100px;padding:.6rem 1.7rem}
+@keyframes heroUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-inner>*{animation:heroUp .6s ease both}
+.hero-inner>div:first-child{animation-delay:.1s}
+.stats-row{position:relative;z-index:2;background:transparent;border:none;margin-top:-2.6rem;padding:0 1rem 1.2rem}
+.stats-inner{background:#fff;border:1px solid var(--divider);border-radius:var(--r);box-shadow:var(--shadow-lg);overflow:hidden}
+@media(max-width:960px){
+  .hero-wrap{padding:2.6rem 1.2rem 4.6rem}
+  .hero-inner{text-align:center;gap:1.8rem}
+  .hero-emblem{display:flex!important;order:-1;margin:0 auto;width:132px;height:132px}
+  .hero-name::after{margin-inline:auto}
+  .hero-bio{margin-inline:auto;border-inline-start:none;padding-inline-start:0}
+  .hero-chips,.hero-btns{justify-content:center}
+}
+@media(max-width:640px){
+  .stats-row{margin-top:-2.2rem}
+  .stats-inner{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat{padding:.9rem .6rem;border:none;border-bottom:1px solid var(--divider)}
+  .stat:nth-child(odd){border-left:1px solid var(--divider)}
+  .stat:nth-last-child(-n+2){border-bottom:none}
+}
+@media(prefers-reduced-motion:reduce){.hero-inner>*{animation:none}}
+/* ARTICLES */
+.art-tools{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.1rem}
+.art-search{width:100%;padding:.6rem .95rem;border:1px solid var(--divider);border-radius:100px;font-family:inherit;font-size:.82rem;background:var(--purple-xlt);outline:none}
+.art-search:focus{border-color:var(--purple-mid)}
+.art-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.art-chip{border:1px solid var(--divider);background:var(--purple-xlt);color:var(--ink-soft);padding:.28rem .95rem;border-radius:100px;font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer}
+.art-chip.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+.art-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.art-card{border:1px solid var(--divider);border-radius:var(--r);overflow:hidden;background:#fff;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.art-card[hidden]{display:none}
+.art-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.art-cover{height:110px;background:linear-gradient(135deg,var(--purple),var(--rose))}
+.art-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.art-body{padding:.9rem 1rem 1rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
+.art-cat{align-self:flex-start;font-size:.68rem;font-weight:700;background:var(--purple-lt);color:var(--purple-mid);padding:.12rem .6rem;border-radius:100px}
+.art-title{font-size:.88rem;font-weight:700;line-height:1.6;color:var(--ink)}
+.art-more{margin-top:auto;align-self:flex-start;background:var(--purple);color:#fff;text-decoration:none;font-size:.75rem;font-weight:600;padding:.3rem 1rem;border-radius:100px}
+.art-more:hover{background:var(--purple-mid)}
+.art-empty{text-align:center;color:var(--ink-faint);font-size:.82rem;padding:1rem}
+@media(max-width:560px){.art-grid{grid-template-columns:1fr}}
+/* ADMIN LOGIN ARROW */
+.adm-link{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--divider);color:var(--purple-mid);opacity:.5;transition:opacity .2s,background .2s}
+.adm-link:hover,.adm-link:focus-visible{opacity:1;background:var(--purple-lt)}
+.adm-link svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -425,6 +481,9 @@ footer strong{color:rgba(255,255,255,.85)}
     <a href="#" class="nav-brand">
       <div class="nav-logo" style="padding:0;overflow:hidden"><img src="assets/batool-logo.jpeg" alt="شعار بتول الزهراني" style="width:100%;height:100%;object-fit:cover"></div>
       <span class="nav-name">بتول الزهراني</span>
+    </a>
+    <a href="admin.html" class="adm-link" aria-label="تسجيل دخول الأدمن" title="دخول الأدمن">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
     </a>
   </nav>
 </header>
@@ -965,11 +1024,19 @@ footer strong{color:rgba(255,255,255,.85)}
   </div>
 
   <!-- ARTICLES -->
-  <div class="card" data-page="research">
+  <div class="card" id="articles" data-page="research">
     <div class="card-h">المقالات</div>
-    <div class="research-list">
-      <div class="research-item"><span class="rnum">01</span>اللائحة التنفيذيَّة لنظام حقوق المؤلّف .. أحكامٌ تحمي الإبداع <a href="https://codifiedlaw.blog/blog/%D8%A7%D9%84%D9%84%D8%A7%D8%A6%D8%AD%D8%A9-%D8%A7%D9%84%D8%AA%D9%86%D9%81%D9%8A%D8%B0%D9%8A%D8%A9-%D9%84%D9%86%D8%B8%D8%A7%D9%85-%D8%AD%D9%82%D9%88%D9%82-%D8%A7%D9%84%D9%85%D8%A4%D9%84%D9%81-%D8%A3%D8%AD%D9%83%D8%A7%D9%85-%D8%AA%D8%AD%D9%85%D9%8A-%D8%A7%D9%84%D8%A5%D8%A8%D8%AF%D8%A7%D8%B9" target="_blank" rel="noopener" style="display:inline-block;margin-inline-start:.4rem;font-size:.76rem;font-weight:700;color:var(--purple-mid);text-decoration:none">للاطلاع ↗</a></div>
+    <div class="art-tools">
+      <input class="art-search" id="artSearch" type="search" placeholder="ابحثي في المقالات" aria-label="بحث في المقالات">
+      <div class="art-chips" id="artChips"><button type="button" class="art-chip on" data-cat="">الكل</button></div>
     </div>
+    <div class="art-grid" id="artGrid">
+      <article class="art-card">
+        <div class="art-cover"></div>
+        <div class="art-body"><span class="art-cat">أنظمة</span><h3 class="art-title">اللائحة التنفيذيَّة لنظام حقوق المؤلّف .. أحكامٌ تحمي الإبداع</h3><a class="art-more" href="https://codifiedlaw.blog/blog/%D8%A7%D9%84%D9%84%D8%A7%D8%A6%D8%AD%D8%A9-%D8%A7%D9%84%D8%AA%D9%86%D9%81%D9%8A%D8%B0%D9%8A%D8%A9-%D9%84%D9%86%D8%B8%D8%A7%D9%85-%D8%AD%D9%82%D9%88%D9%82-%D8%A7%D9%84%D9%85%D8%A4%D9%84%D9%81-%D8%A3%D8%AD%D9%83%D8%A7%D9%85-%D8%AA%D8%AD%D9%85%D9%8A-%D8%A7%D9%84%D8%A5%D8%A8%D8%AF%D8%A7%D8%B9" target="_blank" rel="noopener">اكتشفي المزيد</a></div>
+      </article>
+    </div>
+    <p class="art-empty" id="artEmpty" hidden>لا توجد مقالات مطابقة.</p>
   </div>
 
   <!-- LEADERSHIP -->
@@ -1273,6 +1340,10 @@ footer strong{color:rgba(255,255,255,.85)}
     <img src="https://visitor-badge.laobi.icu/badge?page_id=batool-alzahrani.legal-portfolio&text=عدد%20الزيارات&color=%233a2768" alt="عدد الزيارات" style="border-radius:4px">
   </div>
 </footer>
+
+<!-- SUPABASE: ضبط الاتصال وتحميل المحتوى المنشور -->
+<script src="site-config.js"></script>
+<script src="site-loader.js"></script>
 
 <script>
 function sendCtMessage(){
@@ -1642,12 +1713,40 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
 })();
 </script>
 
+<!-- ARTICLES: بحث وتصفية -->
+<script>
+(function(){
+  var g=document.getElementById('artGrid'); if(!g) return;
+  var q=document.getElementById('artSearch'), chips=document.getElementById('artChips'), empty=document.getElementById('artEmpty'), cat='';
+  function cards(){ return Array.prototype.slice.call(g.querySelectorAll('.art-card')); }
+  function catOf(c){ var x=c.querySelector('.art-cat'); return x?x.textContent.trim():''; }
+  function build(){
+    Array.prototype.slice.call(chips.querySelectorAll('.art-chip')).forEach(function(c,i){ if(i) c.remove(); });
+    var seen={};
+    cards().forEach(function(c){ var k=catOf(c); if(k&&!seen[k]){ seen[k]=1; var b=document.createElement('button'); b.type='button'; b.className='art-chip'; b.setAttribute('data-cat',k); b.textContent=k; chips.appendChild(b); } });
+  }
+  function apply(){
+    var t=(q.value||'').trim().toLowerCase(), n=0;
+    cards().forEach(function(c){ var ok=(!cat||catOf(c)===cat)&&(!t||c.textContent.toLowerCase().indexOf(t)>-1); c.hidden=!ok; if(ok) n++; });
+    if(empty) empty.hidden=n>0;
+  }
+  chips.addEventListener('click',function(e){
+    var b=e.target.closest('.art-chip'); if(!b) return;
+    cat=b.getAttribute('data-cat')||'';
+    Array.prototype.forEach.call(chips.querySelectorAll('.art-chip'),function(c){ c.classList.toggle('on',c===b); });
+    apply();
+  });
+  q.addEventListener('input',apply);
+  build(); apply();
+})();
+</script>
+
 <!-- AOS: حركات التمرير -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script>
 (function(){
   // إضافة خصائص AOS تلقائيًا لكل البطاقات والعناصر الرئيسية دون الحاجة لتعديل كل عنصر يدويًا
-  var targets = document.querySelectorAll('.card, .proj-card, .exp-item, .rec-card, .tl-item, .sc, .award-item, .research-item, .course-item, .stat');
+  var targets = document.querySelectorAll('.card, .proj-card, .exp-item, .rec-card, .tl-item, .sc, .award-item, .research-item, .course-item, .stat, .art-card');
   targets.forEach(function(el, i){
     if(!el.hasAttribute('data-aos')){
       el.setAttribute('data-aos', 'fade-up');
