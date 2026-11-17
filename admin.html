@@ -103,22 +103,88 @@ input[type=password],input[type=email]{width:100%;padding:.65rem .8rem;border:1p
     [].forEach.call(d.querySelectorAll('.main > .card'),function(e,i){o['card-'+i]=e});
     if(c)o.contact=c; if(f)o.footer=f; return o;
   }
-  function gate(){
-    $('gate').classList.remove('hide');
-    $('gTitle').textContent='تسجيل الدخول';
-    $('gMsg').textContent='ادخلي ببريد وكلمة مرور حساب الأدمن.';
-    if(!C.url||!C.key){$('err').textContent='لم يتم ضبط site-config.js بعد';return}
-    function go(){
-      $('err').textContent='';
-      fetch(C.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:C.key,'Content-Type':'application/json'},
-        body:JSON.stringify({email:$('em').value.trim(),password:$('pw').value})})
-      .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
-      .then(function(o){
-        if(!o.ok){$('err').textContent='البريد أو كلمة المرور غير صحيحة';return}
-        tok=o.j.access_token;
-        try{sessionStorage.setItem(TK,tok);sessionStorage.setItem(EX,String(Date.now()+(o.j.expires_in||3600)*1000-60000))}catch(e){}
-        $('gate').classList.add('hide');start();
-      }).catch(function(){$('err').textContent='تعذّر الاتصال'});
+function gate(){
+  $('gate').classList.remove('hide');
+  $('gTitle').textContent='تسجيل الدخول';
+  $('gMsg').textContent='ادخلي ببريد وكلمة مرور حساب الأدمن.';
+
+  if(!C.url||!C.key){
+    $('err').textContent='لم يتم ضبط site-config.js بعد';
+    return;
+  }
+
+  function go(){
+    $('err').textContent='';
+
+    fetch(C.url+'/auth/v1/token?grant_type=password',{
+      method:'POST',
+      headers:{
+        apikey:C.key,
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        email:$('em').value.trim(),
+        password:$('pw').value
+      })
+    })
+    .then(function(r){
+      return r.json().then(function(j){
+        return {ok:r.ok,j:j};
+      });
+    })
+    .then(function(o){
+
+      if(!o.ok){
+        $('err').textContent='البريد أو كلمة المرور غير صحيحة';
+        return;
+      }
+
+      // التحقق من هوية المدير الوحيد
+      var ADMIN_UID='e38c1f6d-1ca7-4db4-a7f6-b9ab9489aabe';
+
+      if(!o.j.user || o.j.user.id !== ADMIN_UID){
+        $('err').textContent='ليس لديك صلاحية الدخول إلى لوحة الإدارة.';
+
+        // إنهاء الجلسة لغير المدير
+        tok=null;
+
+        return fetch(C.url+'/auth/v1/logout',{
+          method:'POST',
+          headers:{
+            apikey:C.key,
+            Authorization:'Bearer '+o.j.access_token
+          }
+        });
+      }
+
+      // حفظ جلسة المدير بعد التحقق من هويته
+      tok=o.j.access_token;
+
+      try{
+        sessionStorage.setItem(TK,tok);
+        sessionStorage.setItem(
+          EX,
+          String(Date.now()+(o.j.expires_in||3600)*1000-60000)
+        );
+      }catch(e){}
+
+      $('gate').classList.add('hide');
+      start();
+
+    })
+    .catch(function(){
+      $('err').textContent='تعذّر الاتصال';
+    });
+  }
+
+  $('gBtn').onclick=go;
+
+  $('pw').onkeydown=function(e){
+    if(e.key==='Enter')go();
+  };
+
+  $('em').focus();
+}
     }
     $('gBtn').onclick=go;
     $('pw').onkeydown=function(e){if(e.key==='Enter')go()};
