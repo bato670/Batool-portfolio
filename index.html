@@ -1633,12 +1633,35 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
   modal.querySelector('.pj-backdrop').addEventListener('click', close);
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
 
-  Array.prototype.forEach.call(grid.querySelectorAll('.proj-card'), function(card){
-    card.setAttribute('tabindex','0'); card.setAttribute('role','button');
-    var nm=card.querySelector('.proj-name'); if(nm) card.setAttribute('aria-label','عرض تفاصيل: '+nm.textContent.trim());
-    card.addEventListener('click', function(e){ if(e.target.closest('.cebtn')) return; open(card); });
-    card.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(card); } });
+  /* تفويض الأحداث على document: يعمل حتى لو استُبدلت شبكة المشاريع كاملة بمحتوى لوحة التحكم */
+  function curGrid(){ return document.getElementById('projGrid'); }
+  function decorate(){
+    var g=curGrid(); if(!g) return;
+    Array.prototype.forEach.call(g.querySelectorAll('.proj-card'), function(card){
+      if(!card.hasAttribute('tabindex')) card.setAttribute('tabindex','0');
+      if(!card.hasAttribute('role')) card.setAttribute('role','button');
+      var nm=card.querySelector('.proj-name'); if(nm) card.setAttribute('aria-label','عرض تفاصيل: '+nm.textContent.trim());
+    });
+  }
+  decorate();
+  function cardOf(e){
+    if(!e.target.closest) return null;
+    var c=e.target.closest('#projGrid .proj-card');
+    return c;
+  }
+  document.addEventListener('click', function(e){
+    if(e.target.closest && e.target.closest('.cebtn')) return;
+    var card=cardOf(e); if(card) open(card);
   });
+  document.addEventListener('keydown', function(e){
+    if(e.key!=='Enter' && e.key!==' ') return;
+    var card=cardOf(e); if(!card || e.target!==card) return;
+    e.preventDefault(); open(card);
+  });
+  if(window.MutationObserver){
+    var t=null;
+    new MutationObserver(function(){ clearTimeout(t); t=setTimeout(decorate,50); }).observe(document.body,{childList:true,subtree:true});
+  }
 })();
 </script>
 
