@@ -1477,6 +1477,8 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
 
 <!-- MAGAZINES COVERFLOW v2: يعيد تهيئة نفسه إذا تغيّر المحتوى بعد تحميله من Supabase -->
 <script>
+window.__enh=window.__enh||[];
+window.enh=function(f){window.__enh.push(f);try{f()}catch(e){console.error(e)}};
 (function(){
   var SVG_L='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
   var SVG_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
@@ -1583,7 +1585,7 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
   }
 
   var t=null;
-  function check(){clearTimeout(t);t=setTimeout(function(){init();fixStats()},60)}
+  function check(){clearTimeout(t);t=setTimeout(function(){init();fixStats();window.__enh.forEach(function(f){try{f()}catch(e){console.error(e)}})},60)}
   new MutationObserver(check).observe(document.body,{childList:true,subtree:true});
   init();fixStats();
 })();
@@ -1591,30 +1593,32 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
 
 <!-- RECOMMENDATION ENVELOPES -->
 <script>
-(function(){
+enh(function(){
   var g=document.getElementById('envGrid'); if(!g) return;
-  var envs=[].slice.call(g.querySelectorAll('.env'));
+  var all=[].slice.call(g.querySelectorAll('.env'));
+  var envs=all.filter(function(e){return !e._b}); if(!envs.length) return;
   function set(e,on){e.classList.toggle('open',on);e.setAttribute('aria-expanded',on?'true':'false')}
-  envs.forEach(function(e,i){
+  envs.forEach(function(e){
+    e._b=1; e._ix=all.indexOf(e); e.classList.remove('open');
     e.addEventListener('click',function(ev){ if(ev.target.closest('.env-open')) return; set(e,!e.classList.contains('open')); });
     e.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();set(e,!e.classList.contains('open'))} });
   });
   if(!('IntersectionObserver' in window)){envs.forEach(function(e){set(e,true)});return}
-  var io=new IntersectionObserver(function(list){
+  if(!window.__envIO) window.__envIO=new IntersectionObserver(function(list){
     list.forEach(function(en){
-      var e=en.target, i=envs.indexOf(e);
+      var e=en.target, i=e._ix||0;
       if(en.intersectionRatio>=.55){ if(!e._t&&!e.classList.contains('open')) e._t=setTimeout(function(){set(e,true);e._t=0},(i%3)*150); }
       else if(en.intersectionRatio<.05){ clearTimeout(e._t); e._t=0; set(e,false); }
     });
   },{threshold:[0,.05,.55]});
-  envs.forEach(function(e){io.observe(e)});
-})();
+  envs.forEach(function(e){window.__envIO.observe(e)});
+});
 </script>
 
 <!-- AWARDS CAROUSEL -->
 <script>
-(function(){
-  var track=document.getElementById('awTrack'); if(!track) return;
+enh(function(){
+  var track=document.getElementById('awTrack'); if(!track||track._i) return; track._i=1;
   var prev=document.getElementById('awPrev'), next=document.getElementById('awNext'), dotsEl=document.getElementById('awDots');
   var items=Array.prototype.slice.call(track.querySelectorAll('.award-item'));
   var dots=[];
@@ -1653,13 +1657,13 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
   // the section lives inside a hidden tab: refresh once it becomes visible
   new MutationObserver(function(){ buildDots(); update(); }).observe(track.closest('.card'), {attributes:true, attributeFilter:['class']});
   buildDots(); update();
-})();
+});
 </script>
 
 <!-- CERTIFICATE DECK -->
 <script>
-(function(){
-  var stage=document.getElementById('deckStage'); if(!stage) return;
+enh(function(){
+  var stage=document.getElementById('deckStage'); if(!stage||stage._i) return; stage._i=1;
   var cards=Array.prototype.slice.call(stage.querySelectorAll('.deck-card'));
   var prev=document.getElementById('deckPrev'), next=document.getElementById('deckNext'), counter=document.getElementById('deckCounter');
   var n=cards.length, cur=0;
@@ -1710,7 +1714,7 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
 
   window.addEventListener('resize', layout);
   layout();
-})();
+});
 </script>
 
 <!-- PROJECT POPUP -->
@@ -1785,10 +1789,13 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
 
 <!-- EXPERIENCE SLIDE-BOXES -->
 <script>
-(function(){
-  var items=Array.prototype.slice.call(document.querySelectorAll('#exp .exp-list > .exp-item')); if(!items.length) return;
+enh(function(){
+  var items=Array.prototype.slice.call(document.querySelectorAll('#exp .exp-list > .exp-item')).filter(function(x){return !x._xp}); if(!items.length) return;
   function el(t,c,x){var e=document.createElement(t); if(c) e.className=c; if(x) e.textContent=x; return e;}
   items.forEach(function(it){
+    it._xp=1;
+    Array.prototype.forEach.call(it.querySelectorAll(':scope > .xp-front,:scope > .xp-back'),function(x){x.remove()});
+    it.classList.remove('xp','rev','xp-gold','nt'); it.style.height='';
     var roleFull=(it.querySelector('.exp-role')||{}).textContent||'';
     var k=roleFull.indexOf(' — ');
     var title=k>-1?roleFull.slice(0,k):'', ent=k>-1?roleFull.slice(k+3):roleFull;
@@ -1850,13 +1857,13 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
     it.addEventListener('click',function(){ if(justDragged) return; setRev(!it.classList.contains('rev')); });
     it.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setRev(!it.classList.contains('rev')); } });
   });
-})();
+});
 </script>
 
 <!-- ARTICLES: بحث وتصفية -->
 <script>
-(function(){
-  var g=document.getElementById('artGrid'); if(!g) return;
+enh(function(){
+  var g=document.getElementById('artGrid'); if(!g||g._i) return; g._i=1;
   var q=document.getElementById('artSearch'), chips=document.getElementById('artChips'), empty=document.getElementById('artEmpty'), cat='';
   function cards(){ return Array.prototype.slice.call(g.querySelectorAll('.art-card')); }
   function catOf(c){ var x=c.querySelector('.art-cat'); return x?x.textContent.trim():''; }
@@ -1878,7 +1885,7 @@ document.querySelectorAll('.mag-cover img').forEach(function(img){
   });
   q.addEventListener('input',apply);
   build(); apply();
-})();
+});
 </script>
 
 <!-- AOS: حركات التمرير -->
